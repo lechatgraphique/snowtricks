@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -56,7 +59,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="datetime", nullable=false)
-     * @var string $createdAt
+     * @var DateTime $createdAt
      */
     private $createdAt;
 
@@ -80,9 +83,22 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @var string $resetPasswordAt
+     * @var DateTime $resetPasswordAt
      */
     private $resetPasswordAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="user")
+     */
+    private $tricks;
+
+    /**
+     * Trick constructor
+     */
+    public function __construct()
+    {
+        $this->tricks = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -218,18 +234,18 @@ class User implements UserInterface
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
     /**
-     * @param string $createdAt
+     * @param DateTime $createdAt
      * @return User
      */
-    public function setCreatedAt(string $createdAt): User
+    public function setCreatedAt(DateTime $createdAt): User
     {
         $this->createdAt = $createdAt;
 
@@ -294,22 +310,65 @@ class User implements UserInterface
     }
 
     /**
-     * @return string
+     * @return DateTime
      */
-    public function getResetPasswordAt(): string
+    public function getResetPasswordAt(): DateTime
     {
         return $this->resetPasswordAt;
     }
 
     /**
-     * @param string $resetPasswordAt
+     * @param DateTime $resetPasswordAt
      * @return User
      */
-    public function setResetPasswordAt(string $resetPasswordAt): User
+    public function setResetPasswordAt(DateTime $resetPasswordAt): User
     {
         $this->resetPasswordAt = $resetPasswordAt;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Trick[]
+     */
+    public function getTricks(): Collection
+    {
+        return $this->tricks;
+    }
+
+    /**
+     * @param Collection $tricks
+     * @return $this
+     */
+    public function setTricks(Collection $tricks): self
+    {
+        $this->tricks = $tricks;
+
+        return $this;
+    }
+
+    /**
+     * @param Trick $trick
+     * @return $this
+     */
+    public function addTrick(Trick $trick): self
+    {
+        if ($this->tricks->contains($trick)) {
+            $this->tricks->add($trick);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Trick $trick
+     * @return $this
+     */
+    public function removeTrick(Trick $trick): self
+    {
+        if ($this->tricks->contains($trick)) {
+            $this->tricks->removeElement($trick);
+        }
     }
 
     /**
