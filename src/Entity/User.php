@@ -93,11 +93,14 @@ class User implements UserInterface
     private $tricks;
 
     /**
-     * Trick constructor
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user")
      */
+    private $comments;
+
     public function __construct()
     {
         $this->tricks = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     /**
@@ -369,6 +372,53 @@ class User implements UserInterface
         if ($this->tricks->contains($trick)) {
             $this->tricks->removeElement($trick);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param Collection $comments
+     * @return $this
+     */
+    public function setComments(Collection $comments): self
+    {
+        $this->comments = $comments;
+
+        return $this;
+    }
+
+    /**
+     * @param Comment $comment
+     * @return $this
+     */
+    public function addComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->add($comment);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Comment $comment
+     * @return $this
+     */
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this-> comments->removeElement($comment);
+        }
+
+        return $this;
     }
 
     /**
