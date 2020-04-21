@@ -69,13 +69,13 @@ class Trick
     private $validated = false;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Image", mappedBy="tricks")
+     * @ORM\OneToMany(targetEntity="App\Entity\Image", mappedBy="trick")
      * @var Image
      */
     private $images;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Movie", mappedBy="tricks")
+     * @ORM\OneToMany(targetEntity="App\Entity\Movie", mappedBy="trick")
      */
     private $movies;
 
