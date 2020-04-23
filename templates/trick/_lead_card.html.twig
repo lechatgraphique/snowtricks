@@ -1,0 +1,26 @@
+<article class="flex h-full bg-white rounded overflow-hidden shadow-lg border-b-8 border-teal-500 mb-5">
+    <div class="flex flex-wrap no-underline hover:no-underline">
+        <a href="{{ path('home_show') }}" class="w-full md:w-1/2">
+            <img src="https://images.unsplash.com/photo-1518608774889-b04d2abe7702?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1300&q=80" class="h-full w-full object-cover shadow" alt="">
+        </a>
+        <div class="w-full md:w-1/3 flex flex-col flex-grow flex-shrink">
+            <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow-lg px-6 py-6">
+                <a href="{{ path('home_show') }}">
+                    <h1 class="w-full font-bold text-5xl leading-tight text-gray-800 pb-3 hover:text-teal-500">🏂 Bienvenue aux fans de snowboard !</h1>
+                </a>
+                <p class="text-base leading-6 text-gray-800 mb-5">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. <br><br> Accusantium aperiam commodi consequatur consequuntur ex incidunt neque porro quae sapiente totam. Aliquid dolore facere necessitatibus officia sed soluta veritatis vitae voluptate?
+                </p>
+            </div>
+            <div class="flex-none mt-auto bg-white rounded-t-none overflow-hidden shadow-lg p-6">
+                <div class="flex items-center justify-between">
+                    <img class="w-8 h-8 rounded-full mr-4 avatar" data-tippy-content="Author Name" src="http://i.pravatar.cc/300" alt="Avatar of Author" tabindex="0">
+                    <div class="flex text-sm leading-5 text-gray-500">
+                        <time datetime="2020-03-16">Posté le 22 avril 2020</time><span class="mx-1">&middot;</span><span>15:30</span>
+                    </div>
+                </div>
+            </div>
+            {% include "trick/_edit.html.twig" %}
+        </div>
+    </div>
+</article>

@@ -1,0 +1,28 @@
+{% extends "base.html.twig" %}
+
+{% block title %} Accueil SnowTricks {% endblock %}
+
+{% block body %}
+
+    {% include "trick/_lead_card.html.twig" %}
+
+    <div id="scroll-tricks" class="flex flex-wrap justify-between pt-12 -mx-6">
+        {% include "trick/_card.html.twig" %}
+        {% include "trick/_card.html.twig" %}
+        {% include "trick/_card.html.twig" %}
+    </div>
+
+    <!-- Button LoadMore Tricks -->
+    <div class="flex justify-center mb-10">
+        <a href="#" class="w-full bg-teal-500 text-center text-white font-medium rounded py-4 px-6 md:w-auto">
+            <i class="fas fa-spinner w-4 h-4 mr-2"></i>
+            <span>Voir plus de tricks</span>
+        </a>
+    </div>
+
+    <!-- Scroll Top -->
+    <a class="bg-white fixed visible sm:invisible md:visible right-0 bottom-0 p-6" href="#scroll-top">
+        <i class="fas fa-arrow-up fa-lg text-gray-800"></i>
+    </a>
+
+{% endblock %}
