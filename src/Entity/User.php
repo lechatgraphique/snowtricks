@@ -6,13 +6,20 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\This;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity()
+ * @UniqueEntity(fields={"username"}, message="Le compte existe déjà")
  */
 class User implements UserInterface
 {
+    const CONTRIBUTOR = "ROLE_USER";
+    const ADMINISTRATOR = "ROLE_ADMIN";
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -23,15 +30,25 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255, unique=true, nullable=false)
+     * @Assert\Email
      * @var string $username
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
+     * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire minimum {{ limit }} caractères")
+     * @Assert\EqualTo(propertyPath="confirmPassword", message="Votre mot de passe doit être le même que votre mot de passe de confirmation")
      * @var string $password
      */
     private $password;
+
+    /**
+     * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire minimum {{ limit }} caractères")
+     * @Assert\EqualTo(propertyPath="password", message="Vous n'avez pas tapé le même mot de passe")
+     * @var string $confirmPassword
+     */
+    private $confirmPassword;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -88,7 +105,7 @@ class User implements UserInterface
     private $resetPasswordAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Trick", mappedBy="user")
      */
     private $tricks;
 
@@ -99,8 +116,10 @@ class User implements UserInterface
 
     public function __construct()
     {
+        $this->createdAt = new \DateTime();
         $this->tricks = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->roles[] = self::CONTRIBUTOR;
     }
 
     /**
@@ -125,7 +144,7 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return $this->username;
     }
@@ -144,7 +163,7 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -163,7 +182,26 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getAvatar(): string
+    public function getConfirmPassword(): ?string
+    {
+        return $this->confirmPassword;
+    }
+
+    /**
+     * @param string $confirmPassword
+     * @return User
+     */
+    public function setConfirmPassword(string $confirmPassword): User
+    {
+        $this->confirmPassword = $confirmPassword;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAvatar(): ?string
     {
         return $this->avatar;
     }
@@ -182,7 +220,7 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getCountry(): string
+    public function getCountry(): ?string
     {
         return $this->country;
     }
@@ -201,7 +239,7 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getFirstName(): string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
@@ -220,7 +258,7 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
@@ -239,7 +277,7 @@ class User implements UserInterface
     /**
      * @return DateTime
      */
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
@@ -258,7 +296,7 @@ class User implements UserInterface
     /**
      * @return bool
      */
-    public function isDisabled(): bool
+    public function isDisabled(): ?bool
     {
         return $this->disabled;
     }
@@ -277,9 +315,13 @@ class User implements UserInterface
     /**
      * @return array
      */
-    public function getRoles(): array
+    public function getRoles(): ?array
     {
-        return $this->roles;
+        $roles = $this->roles;
+
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
     }
 
     /**
@@ -296,7 +338,7 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getResetPassword(): string
+    public function getResetPassword(): ?string
     {
         return $this->resetPassword;
     }
@@ -315,7 +357,7 @@ class User implements UserInterface
     /**
      * @return DateTime
      */
-    public function getResetPasswordAt(): DateTime
+    public function getResetPasswordAt(): ?DateTime
     {
         return $this->resetPasswordAt;
     }

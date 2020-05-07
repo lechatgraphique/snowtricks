@@ -1,4 +1,5 @@
 {% extends "base.html.twig" %}
+{% form_theme form "form/form_errors.html.twig" %}
 
 {% block title %} S'inscrire à SnowTricks {% endblock %}
 
@@ -13,32 +14,38 @@
                     <a href="{{ path('auth_register') }}" class="text-xl p-3 border-b-4 -mb-1 text-teal-500 border-teal-500">Inscription</a>
                     <a href="{{ path('auth_login') }}" class="text-xl p-3 border-b-4 -mb-1 transition-all duration-300 ease-in-out hover:text-teal-500 hover:border-teal-500 ">Login</a>
                 </div>
-                <form class="w-full max-w-lg mt-8">
+                {{ form_start(form, { 'attr': { 'class': 'w-full max-w-lg mt-8' } }) }}
                     <div class="flex flex-wrap -mx-3 mb-3">
                         <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                            <input class="py-4 appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" type="text" placeholder="Prénom">
+                            {{ form_widget(form.firstName) }}
                         </div>
                         <div class="w-full md:w-1/2 px-3">
-                            <input class="py-4 appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" type="text" placeholder="Nom">
+                            {{ form_widget(form.lastName) }}
                         </div>
                     </div>
                     <div class="flex flex-wrap -mx-3 mb-3">
                         <div class="w-full px-3">
-                            <input class="py-4 appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"  type="email" placeholder="Email">
+                            {{ form_widget(form.username) }}
+                            {{ form_errors(form.username) }}
                         </div>
                     </div>
                     <div class="flex flex-wrap -mx-3 mb-3">
-                        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                            <input class="py-4 appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" type="password" placeholder="Mot de passe">
-                        </div>
-                        <div class="w-full md:w-1/2 px-3">
-                            <input class="py-4 appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" type="password" placeholder="Confirmer le mot de passe">
+                        <div class="w-full px-3">
+                            {{ form_widget(form.password) }}
+                            {{ form_errors(form.password) }}
                         </div>
                     </div>
+                    <div class="flex flex-wrap -mx-3 mb-3">
+                        <div class="w-full px-3">
+                            {{ form_widget(form.confirmPassword) }}
+                            {{ form_errors(form.confirmPassword) }}
+                        </div>
+                    </div>
+
                     <button class="mt-5 tracking-wide font-semibold bg-teal-500 text-gray-100 w-full py-4 rounded hover:bg-teal-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
-                            <span class="ml-3">INSCRIPTION</span>
+                        <span class="ml-3">INSCRIPTION</span>
                     </button>
-                </form>
+                {{ form_end(form) }}
             </div>
         </div>
         <div class="flex-1 bg-indigo-100 text-center hidden lg:flex">
@@ -47,4 +54,3 @@
     </div>
 
 {% endblock %}
-

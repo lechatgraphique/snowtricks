@@ -21,7 +21,7 @@ class Trick
     private $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\user", mappedBy="tricks")
+     * @ORM\ManyToOne(targetEntity="App\Entity\user", inversedBy="tricks")
      * @var User
      */
     private $user;
