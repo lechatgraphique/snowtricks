@@ -1,0 +1,68 @@
+{% if app.user %}
+    <div class="flex items-center z-50">
+        <div class="dropdown inline-block relative">
+            <button class="bg-teal-500 py-2 px-4 rounded inline-flex items-center">
+                <img class="w-8 h-8 rounded-full object-cover object-center mr-4 avatar" src="{{ asset('uploads/profile/'~app.user.avatar) }}" alt="{{ app.user.avatar }}">
+                <span class="text-white mr-1">Bonjour, {{ app.user.firstName }}</span>
+                <i class="ri-arrow-drop-down-line ri-xl"></i>
+            </button>
+            <ul class="dropdown-menu absolute hidden w-full text-gray-700 pt-1">
+                {% if is_granted('ROLE_ADMIN')%}
+                    <li>
+
+                        <a class="bg-white hover:bg-gray-200 py-2 px-4 block whitespace-no-wrap" href="#">
+                            <i class="ri-user-settings-line mr-2"></i>
+                            Actualités
+                        </a>
+                    </li>
+                    <li>
+                        <a class="bg-white hover:bg-gray-200 py-2 px-4 block whitespace-no-wrap" href="#">
+                            <i class="ri-user-settings-line mr-2"></i>
+                            All Tricks
+                        </a>
+                    </li>
+                    <li>
+                        <a class="bg-white hover:bg-gray-200 py-2 px-4 block whitespace-no-wrap" href="#">
+                            <i class="ri-user-settings-line mr-2"></i>
+                            Catégories
+                        </a>
+                    </li>
+                    <li>
+                        <a class="bg-white hover:bg-gray-200 py-2 px-4 block whitespace-no-wrap" href="#">
+                            <i class="ri-user-settings-line mr-2"></i>
+                            Utilisateurs
+                        </a>
+                    </li>
+                    <hr>
+                {% endif %}
+                {% if is_granted('ROLE_USER')%}
+                <li>
+                    <a class="bg-white hover:bg-gray-200 py-2 px-4 block whitespace-no-wrap" href="#">
+                        <i class="ri-user-settings-line mr-2"></i>
+                        Mes Tricks
+                    </a>
+                </li>
+                <li>
+                    <a class="bg-white hover:bg-gray-200 py-2 px-4 block whitespace-no-wrap" href="{{ path('user_edit') }}">
+                        <i class="ri-user-settings-line mr-2"></i>
+                        Profil
+                    </a>
+                </li>
+                <hr>
+                <li>
+                    <a class="flex items-center rounded-b bg-white hover:bg-teal-400 hover:text-white font-normal py-2 px-4 block" href="{{ path('auth_logout') }}">
+                        <i class="ri-logout-box-line mr-2"></i>
+                        Déconnexion
+                    </a>
+                </li>
+                {% endif%}
+            </ul>
+        </div>
+    </div>
+{% else %}
+    <div class="flex items-center">
+        <a href="{{ path('auth_login') }}" class=" flex flex-col text-white hover:text-teal-500 antialiased rounded h-10 w-10 flex items-center justify-center">
+            <i class="ri-user-shared-line ri-2x"></i>
+        </a>
+    </div>
+{% endif %}
