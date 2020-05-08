@@ -23,5 +23,6 @@ yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
 /public/images/
+/public/uploads/*
 .idea/
 *.DS_Store

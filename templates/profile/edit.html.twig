@@ -1,0 +1,58 @@
+{% extends "base.html.twig" %}
+
+{% form_theme form "form/form_errors.html.twig" %}
+
+{% block body %}
+    {{ form_start(form, {'attr':{'class': 'mt-32 mb-10'}}) }}
+        <div class="grid row-gap-4 col-gap-4 grid-cols-6 items-center">
+            <div class="col-span-6">
+                {% for message in app.flashes('success') %}
+                    <div class="bg-green-200 border-l-4 border-green-500 text-green-800 p-4">
+                        <p class="font-bold flex items-center"><i class="ri-check-double-line ri-xl mr-2"></i> Succès !</p>
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-span-6 md:col-span-2">
+                <img src="{{ asset('uploads/profile/'~user.avatar) }}" alt="" class="w-full object-cover object-center rounded" width="50"/>
+            </div>
+            <div class="col-span-6 md:col-span-5"></div>
+            <div class="col-span-6 md:col-span-2">
+                {{ form_label(form.avatar) }}
+                {{ form_widget(form.avatar) }}
+                {{ form_errors(form.avatar) }}
+            </div>
+            <div class="col-span-6 md:col-span-5"></div>
+            <div class="col-span-6 md:col-span-2">
+                {{ form_label(form.firstName) }}
+                {{ form_widget(form.firstName) }}
+                {{ form_errors(form.firstName) }}
+            </div>
+            <div class="col-span-6 md:col-span-2">
+                {{ form_label(form.lastName) }}
+                {{ form_widget(form.lastName) }}
+                {{ form_errors(form.lastName) }}
+            </div>
+            <div class="col-span-6 md:col-span-2">
+                {{ form_label(form.country) }}
+                {{ form_widget(form.country) }}
+                {{ form_errors(form.country) }}
+            </div>
+            <div class="col-span-6 md:col-span-6">
+                {{ form_label(form.username) }}
+                {{ form_widget(form.username) }}
+                {{ form_errors(form.username) }}
+            </div>
+            <div class="col-span-6">
+                <div class="flex justify-end">
+                    <button>
+                        <a type="submit" class="py-4 bg-teal-500 text-white font-medium px-5 rounded hover:bg-teal-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
+                            <i class="ri-edit-line mr-2"></i>
+                            Modifier
+                        </a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}

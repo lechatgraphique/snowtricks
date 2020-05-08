@@ -3,22 +3,24 @@
 namespace App\Form;
 
 use App\Entity\User;
-
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
-class RegistrationType extends AbstractType
+class EditProfileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $widgetAttr = 'w-full appearance-none bg-gray-200 border border-grey-lighter text-grey-darker py-3 px-4 rounded focus:outline-none focus:bg-white';
+        $widgetAttr = 'w-full appearance-none bg-white border border-grey-lighter text-grey-darker py-3 px-4 rounded ';
         $labelAttr = 'block mb-2 uppercase tracking-wide text-grey-darker text-xs font-bold';
 
         $builder
-            ->add('username',TextType::class, [
+            ->add('username',EmailType::class, [
                 'label'             => 'Email',
                 'label_attr'        => [
                     'class'         => $labelAttr
@@ -28,28 +30,40 @@ class RegistrationType extends AbstractType
                     'class'         => $widgetAttr
                 ]
             ])
-            ->add('password',PasswordType::class, [
-                'label' => 'Mot de passe',
+            ->add('avatar',FileType::class, [
+                'label'             => 'Photo de profil',
+                'mapped'            => false,
+                'required'          =>  false,
+                'constraints' => [
+                    new File([
+                        'maxSize'   => '1024k',
+                        'mimeTypes' => [
+                            'image/jpeg'
+                        ],
+                        'mimeTypesMessage' => 'Veuillez télécharger votre image de profil forme de fichier Jpg.',
+                    ])
+                ],
                 'label_attr'        => [
                     'class'         => $labelAttr
                 ],
                 'attr'              => [
-                    'placeholder'   => 'Mot de passe',
+                    'placeholder'   => 'Photo de profil',
                     'class'         => $widgetAttr
                 ]
             ])
-            ->add('confirmPassword',PasswordType::class, [
-                'label' => 'Confirmez le Mot de passe',
+            ->add('country', IntegerType::class, [
+                'label'             => 'Département',
+                'required'          =>  false,
                 'label_attr'        => [
                     'class'         => $labelAttr
                 ],
                 'attr'              => [
-                    'placeholder'   => 'Confirmez le Mot de passe',
+                    'placeholder'   => '75',
                     'class'         => $widgetAttr
                 ]
             ])
             ->add('firstName',TextType::class, [
-                'label' => 'Prénom',
+                'label'             => 'Prénom',
                 'label_attr'        => [
                     'class'         => $labelAttr
                 ],
@@ -59,7 +73,7 @@ class RegistrationType extends AbstractType
                 ]
             ])
             ->add('lastName',TextType::class, [
-                'label' => 'Nom',
+                'label'             => 'Nom',
                 'label_attr'        => [
                     'class'         => $labelAttr
                 ],
@@ -78,4 +92,3 @@ class RegistrationType extends AbstractType
         ]);
     }
 }
-

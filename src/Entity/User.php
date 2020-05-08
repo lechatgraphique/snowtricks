@@ -6,7 +6,6 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use phpDocumentor\Reflection\Types\This;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -17,9 +16,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User implements UserInterface
 {
-    const CONTRIBUTOR = "ROLE_USER";
-    const ADMINISTRATOR = "ROLE_ADMIN";
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -35,17 +31,18 @@ class User implements UserInterface
      */
     private $username;
 
+
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
-     * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire minimum {{ limit }} caractères")
-     * @Assert\EqualTo(propertyPath="confirmPassword", message="Votre mot de passe doit être le même que votre mot de passe de confirmation")
+     * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire minimum {{ limit }} caractères", groups={"registration"})
+     * @Assert\EqualTo(propertyPath="confirmPassword", message="Votre mot de passe doit être le même que votre mot de passe de confirmation", groups={"registration"})
      * @var string $password
      */
     private $password;
 
     /**
-     * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire minimum {{ limit }} caractères")
-     * @Assert\EqualTo(propertyPath="password", message="Vous n'avez pas tapé le même mot de passe")
+     * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire minimum {{ limit }} caractères", groups={"registration"})
+     * @Assert\EqualTo(propertyPath="password", message="Vous n'avez pas tapé le même mot de passe", groups={"registration"})
      * @var string $confirmPassword
      */
     private $confirmPassword;
@@ -119,7 +116,6 @@ class User implements UserInterface
         $this->createdAt = new \DateTime();
         $this->tricks = new ArrayCollection();
         $this->comments = new ArrayCollection();
-        $this->roles[] = self::CONTRIBUTOR;
     }
 
     /**
