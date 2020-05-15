@@ -43,6 +43,20 @@ class User implements UserInterface
     /**
      * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire minimum {{ limit }} caractères", groups={"registration"})
      * @Assert\EqualTo(propertyPath="password", message="Vous n'avez pas tapé le même mot de passe", groups={"registration"})
+     * @var string $oldPassword
+     */
+    private $oldPassword;
+
+    /**
+     * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire minimum {{ limit }} caractères", groups={"registration"})
+     * @Assert\EqualTo(propertyPath="password", message="Vous n'avez pas tapé le même mot de passe", groups={"registration"})
+     * @var string $newPassword
+     */
+    private $newPassword;
+
+    /**
+     * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire minimum {{ limit }} caractères", groups={"registration"})
+     * @Assert\EqualTo(propertyPath="password", message="Vous n'avez pas tapé le même mot de passe", groups={"registration"})
      * @var string $confirmPassword
      */
     private $confirmPassword;
@@ -174,6 +188,43 @@ class User implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getOldPassword(): ?string
+    {
+        return $this->oldPassword;
+    }
+
+    /**
+     * @param string $oldPassword
+     * @return User
+     */
+    public function setOldPassword(string $oldPassword): User
+    {
+        $this->oldPassword = $oldPassword;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNewPassword(): ?string
+    {
+        return $this->newPassword;
+    }
+
+    /**
+     * @param string $newPassword
+     * @return User
+     */
+    public function setNewPassword(string $newPassword): User
+    {
+        $this->newPassword = $newPassword;
+        return $this;
+    }
+
 
     /**
      * @return string
