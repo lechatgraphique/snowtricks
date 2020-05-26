@@ -16,23 +16,34 @@ class EditPasswordType extends AbstractType
         $labelAttr = 'block mb-2 uppercase tracking-wide text-grey-darker text-xs font-bold';
 
         $builder
-            ->add('password',PasswordType::class, [
-                'label'             => 'Mot de passe',
+            ->add('oldPassword',PasswordType::class, [
+                'label'             => 'Ancien mot de passe',
+                'required'          =>  false,
                 'label_attr'        => [
                     'class'         => $labelAttr
                 ],
                 'attr'              => [
-                    'placeholder'   => 'Mot de passe',
+                    'placeholder'   => 'Ancien mot de passe',
+                    'class'         => $widgetAttr
+                ]
+            ])
+            ->add('newPassword',PasswordType::class, [
+                'label'             => 'Nouveau mot de passe',
+                'required'          =>  false,
+                'label_attr'        => [
+                    'class'         => $labelAttr
+                ],
+                'attr'              => [
                     'class'         => $widgetAttr
                 ]
             ])
             ->add('confirmPassword',PasswordType::class, [
-                'label' => 'Confirmez le Mot de passe',
+                'label' => 'Confirmer le nouveau mot de passe',
+                'required'          =>  false,
                 'label_attr'        => [
                     'class'         => $labelAttr
                 ],
                 'attr'              => [
-                    'placeholder'   => 'Confirmez le Mot de passe',
                     'class'         => $widgetAttr
                 ]
             ])
