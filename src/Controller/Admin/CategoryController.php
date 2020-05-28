@@ -23,16 +23,19 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/categories", name="admin.category.index")
+     * @Route("/admin/categories", name="admin.categories.index")
      * @return Response
      */
     public function index(): Response
     {
+        $focus = "categories";
+
         $objectManager =  $this->getDoctrine()->getRepository('App:Category');
         $categories = $objectManager->findAll();
 
-        return $this->render('admin/category/index.html.twig', [
-            'categories' => $categories
+        return $this->render('admin/index.html.twig', [
+            'categories' => $categories,
+            'focus' => $focus
         ]);
     }
 
@@ -71,7 +74,7 @@ class CategoryController extends AbstractController
 
             $this->addFlash('success', 'La catégorie à bien été ajouté !');
 
-            return  $this->redirectToRoute('admin.category.index');
+            return  $this->redirectToRoute('admin.categories.index');
         }
 
         return $this->render('admin/category/edit.html.twig', [
@@ -100,7 +103,7 @@ class CategoryController extends AbstractController
 
             $this->addFlash('success', 'La catégorie à bien été mis à jours !');
 
-            return  $this->redirectToRoute('admin.category.index');
+            return  $this->redirectToRoute('admin.categories.index');
         }
 
         return $this->render('admin/category/edit.html.twig', [
@@ -120,6 +123,6 @@ class CategoryController extends AbstractController
 
         $this->addFlash('success','Catégorie supprimée');
 
-        return $this->redirectToRoute('admin.category.index');
+        return $this->redirectToRoute('admin.categories.index');
     }
 }

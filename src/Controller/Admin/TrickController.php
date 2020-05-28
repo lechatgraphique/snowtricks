@@ -11,16 +11,20 @@ use Symfony\Component\Routing\Annotation\Route;
 class TrickController extends AbstractController
 {
     /**
-     * @Route("/admin/trick", name="trick_index")
+     * @Route("/admin/tricks", name="admin.tricks.index")
      * @return Response
      */
     public function index(): Response
     {
-        return $this->render('admin/trick/index.html.twig', []);
+        $focus = "tricks";
+
+        return $this->render('admin/index.html.twig', [
+            "focus" => $focus
+        ]);
     }
 
     /**
-     * @Route("/admin/trick/new", name="trick_new")
+     * @Route("/admin/trick/new", name="admin.trick.new")
      * @return Response
      */
     public function edit(): Response
