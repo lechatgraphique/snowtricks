@@ -46,6 +46,7 @@ class CategoryController extends AbstractController
      */
     public function add(Request $request): Response
     {
+        $focus = "categories";
         $category = new Category();
         $form = $this->createForm(NewCategoryType::class, $category);
         $form->handleRequest($request);
@@ -78,7 +79,8 @@ class CategoryController extends AbstractController
         }
 
         return $this->render('admin/category/edit.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'focus' => $focus
         ]);
     }
 

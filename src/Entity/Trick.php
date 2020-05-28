@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,391 +14,317 @@ class Trick
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(type="integer")
-     * @var int $id
+     * @var int|null $id
      */
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\user", inversedBy="tricks")
-     * @var User
+     * @ORM\Column()
+     * @var string|null $author
      */
-    private $user;
+    private ?string $author = null;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=false)
-     * @var string $title
+     * @ORM\Column()
+     * @var string|null $slug
      */
-    private $title;
+    private ?string $slug = null;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var  string $description
+     * @ORM\Column()
+     * @var string|null $title
      */
-    private $description;
+    private ?string $title = null;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @var string $mainImage
+     * @ORM\Column(type="text")
+     * @var string|null $description
      */
-    private $mainImage;
+    private ?string $description = null;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @var string $mainVideo
+     * @ORM\Column()
+     * @var string|null $mainPicture
      */
-    private $mainVideo;
+    private ?string $mainPicture = null;
 
     /**
-     * @ORM\Column(type="datetime", nullable=false)
-     * @var DateTime $createdAt
+     * @ORM\Column()
+     * @var string|null $youtubeMovie
      */
-    private $createdAt;
+    private ?string $youtubeMovie = null;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @var DateTime $updatedAt
+     * @ORM\Column(type="datetime")
+     * @var DateTimeInterface|null $createdAt
      */
-    private $updatedAt;
+    private ?DateTimeInterface $createdAt = null;
+
+    /**
+     * @ORM\Column(type="datetime")
+     * @var DateTimeInterface|null $updatedAt
+     */
+    private ?DateTimeInterface $updatedAt = null;
 
     /**
      * @ORM\Column(type="boolean")
-     * @var bool $validated
+     * @var bool|null $isValid
      */
-    private $validated = false;
+    private ?bool $isValid = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Image", mappedBy="trick")
-     * @var Image
+     * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="trick", cascade={"persist"}, orphanRemoval=true)
+     * @var Collection|null $pictures
      */
-    private $images;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Movie", mappedBy="trick")
-     */
-    private $movies;
+    private ?Collection $pictures = null;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick")
+     * @var Collection|null $comments
      */
-    private $comments;
+    private ?Collection $comments = null;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Category", inversedBy="tricks")
+     * @var Collection|null $categories
      */
-    private $categories;
+    private ?Collection $categories = null;
 
     public function __construct()
     {
-        $this->images = new ArrayCollection();
-        $this->movies = new ArrayCollection();
+        $this->setIsValid(false);
+        $this->pictures = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->categories = new ArrayCollection();
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
+     * @return string|null
+     */
+    public function getAuthor(): ?string
+    {
+        return $this->author;
+    }
+
+    /**
+     * @param string|null $author
      * @return Trick
      */
-    public function setId(int $id): Trick
+    public function setAuthor(?string $author): Trick
     {
-        $this->id = $id;
-
+        $this->author = $author;
         return $this;
     }
 
     /**
-     * @return User
+     * @return string|null
      */
-    public function getUser(): User
+    public function getSlug(): ?string
     {
-        return $this->user;
+        return $this->slug;
     }
 
     /**
-     * @param User $user
+     * @param string|null $slug
      * @return Trick
      */
-    public function setUser(User $user): Trick
+    public function setSlug(?string $slug): Trick
     {
-        $this->user = $user;
-
+        $this->slug = $slug;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
     /**
-     * @param string $title
+     * @param string|null $title
      * @return Trick
      */
-    public function setTitle(string $title): Trick
+    public function setTitle(?string $title): Trick
     {
         $this->title = $title;
-
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
     /**
-     * @param string $description
+     * @param string|null $description
      * @return Trick
      */
-    public function setDescription(string $description): Trick
+    public function setDescription(?string $description): Trick
     {
         $this->description = $description;
-
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMainImage(): string
+    public function getMainPicture(): ?string
     {
-        return $this->mainImage;
+        return $this->mainPicture;
     }
 
     /**
-     * @param string $mainImage
+     * @param string|null $mainPicture
      * @return Trick
      */
-    public function setMainImage(string $mainImage): Trick
+    public function setMainPicture(?string $mainPicture): Trick
     {
-        $this->mainImage = $mainImage;
-
+        $this->mainPicture = $mainPicture;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMainVideo(): string
+    public function getYoutubeMovie(): ?string
     {
-        return $this->mainVideo;
+        return $this->youtubeMovie;
     }
 
     /**
-     * @param string $mainVideo
+     * @param string|null $youtubeMovie
      * @return Trick
      */
-    public function setMainVideo(string $mainVideo): Trick
+    public function setYoutubeMovie(?string $youtubeMovie): Trick
     {
-        $this->mainVideo = $mainVideo;
-
+        $this->youtubeMovie = $youtubeMovie;
         return $this;
     }
 
     /**
-     * @return DateTime
+     * @return DateTimeInterface|null
      */
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
     /**
-     * @param DateTime $createdAt
+     * @param DateTimeInterface|null $createdAt
      * @return Trick
      */
-    public function setCreatedAt(DateTime $createdAt): Trick
+    public function setCreatedAt(?DateTimeInterface $createdAt): Trick
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
     /**
-     * @return DateTime
+     * @return DateTimeInterface|null
      */
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
     /**
-     * @param DateTime $updatedAt
+     * @param DateTimeInterface|null $updatedAt
      * @return Trick
      */
-    public function setUpdatedAt(DateTime $updatedAt): Trick
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): Trick
     {
         $this->updatedAt = $updatedAt;
-
         return $this;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function getValidated(): bool
+    public function getIsValid(): ?bool
     {
-        return $this->validated;
+        return $this->isValid;
     }
 
     /**
-     * @param bool $validated
+     * @param bool|null $isValid
      * @return Trick
      */
-    public function setValidated(bool $validated): Trick
+    public function setIsValid(?bool $isValid): Trick
     {
-        $this->validated = $validated;
-
+        $this->isValid = $isValid;
         return $this;
     }
 
     /**
-     * @return Collection|Image[]
+     * @return Collection|null
      */
-    public function getImages(): Collection
+    public function getPictures(): ?Collection
     {
-        return $this->images;
+        return $this->pictures;
     }
 
     /**
-     * @param Collection $images
-     * @return $this
+     * @param Picture $picture
      */
-    public function setImages(Collection $images): self
+    public function addImage(Picture $picture)
     {
-        $this->images = $images;
+        $picture->setTrick($this);
+        $this->pictures->add($picture);
+    }
 
+    public function removeImage(Picture $picture)
+    {
+        $picture->setTrick(null);
+        $this->pictures->removeElement($picture);
+    }
+
+    /**
+     * @param Collection|null $pictures
+     * @return Trick
+     */
+    public function setPictures(?Collection $pictures): Trick
+    {
+        $this->pictures = $pictures;
         return $this;
     }
 
     /**
-     * @param Image $image
-     * @return $this
+     * @return Collection|null
      */
-    public function addImage(Image $image): self
-    {
-        if ($this->images->contains($image)) {
-            $this->images->add($image);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Image $image
-     * @return $this
-     */
-    public function removeImage(Image $image): self
-    {
-        if ($this->images->contains($image)) {
-            $this->images->removeElement($image);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Movie[]
-     */
-    public function getMovies(): Collection
-    {
-        return $this->movies;
-    }
-
-    /**
-     * @param Collection $movies
-     * @return $this
-     */
-    public function setMovies(Collection $movies): self
-    {
-        $this->movies = $movies;
-
-        return $this;
-    }
-
-    /**
-     * @param Movie $movie
-     * @return $this
-     */
-    public function addMovie(Movie $movie): self
-    {
-        if ($this->movies->contains($movie)) {
-            $this->movies->add($movie);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Movie $movie
-     * @return $this
-     */
-    public function removeMovie(Movie $movie): self
-    {
-        if ($this->movies->contains($movie)) {
-            $this->movies->removeElement($movie);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Comment[]
-     */
-    public function getComments(): Collection
+    public function getComments(): ?Collection
     {
         return $this->comments;
     }
 
-    /**
-     * @param Collection $comments
-     * @return $this
-     */
-    public function setComments(Collection $comments): self
-    {
-        $this->comments = $comments;
-
-        return $this;
-    }
-
-    /**
-     * @param Comment $comment
-     * @return $this
-     */
     public function addComment(Comment $comment): self
     {
-        if ($this->comments->contains($comment)) {
-            $this->comments->add($comment);
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setTrick($this);
         }
 
         return $this;
     }
 
-    /**
-     * @param Comment $comment
-     * @return $this
-     */
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->contains($comment)) {
             $this->comments->removeElement($comment);
-            // set the owning side to null (unless already changed)
             if ($comment->getTrick() === $this) {
                 $comment->setTrick(null);
             }
@@ -408,47 +334,30 @@ class Trick
     }
 
     /**
-     * @return Collection|Category[]
+     * @param Collection|null $comments
+     * @return Trick
      */
-    public function getCategories(): Collection
+    public function setComments(?Collection $comments): Trick
+    {
+        $this->comments = $comments;
+        return $this;
+    }
+
+    /**
+     * @return Collection|null
+     */
+    public function getCategories(): ?Collection
     {
         return $this->categories;
     }
 
     /**
-     * @param Collection $categories
-     * @return $this
+     * @param Collection|null $categories
+     * @return Trick
      */
-    public function setCategories(Collection $categories): self
+    public function setCategories(?Collection $categories): Trick
     {
         $this->categories = $categories;
-
-        return $this;
-    }
-
-    /**
-     * @param Category $category
-     * @return $this
-     */
-    public function addCategory(Category $category): self
-    {
-        if ($this->categories->contains($category)) {
-            $this->categories->add($category);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Category $category
-     * @return $this
-     */
-    public function removeCategory(Category $category): self
-    {
-        if ($this->categories->contains($category)) {
-            $this->categories->removeElement($category);
-        }
-
         return $this;
     }
 }
