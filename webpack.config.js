@@ -3,6 +3,8 @@ Encore
     .setOutputPath('public/build/')
     .setPublicPath('/build')
     .addStyleEntry('tailwind', './assets/css/tailwind.css')
+    .addStyleEntry('bootstrap', './assets/css/global.scss')
+    Encore.enableSassLoader()
     // enable post css loader
     .enablePostCssLoader((options) => {
         options.config = {

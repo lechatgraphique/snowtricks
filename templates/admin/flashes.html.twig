@@ -1,24 +1,17 @@
 <div class="col-span-6">
     {% for message in app.flashes('success') %}
-        <div class="bg-green-100 border-l-4 border-green-500 text-green-800 rounded p-4 my-2">
-            <p class="font-bold flex items-center mb-2">
-                <i class="ri-checkbox-circle-line ri-lg mr-2"></i> Succès !
-            </p>
-            <p class="ml-8">{{ message }}</p>
+        <div class="alert alert-success" role="alert">
+            {{ message }}
         </div>
     {% endfor %}
     {% for message in app.flashes('danger') %}
-        <div class="bg-red-100 border-l-4 border-red-500 text-red-800 rounded p-4 my-2">
-            <p class="font-bold flex items-center">
-                <i class="ri-error-warning-line ri-lg mr-2"></i> Erreur !</p>
-            <p class="ml-8">{{ message }}</p>
+        <div class="alert alert-danger" role="alert">
+            {{ message }}
         </div>
     {% endfor %}
     {% for message in app.flashes('warning') %}
-    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded p-4 my-2">
-        <p class="font-bold flex items-center">
-            <i class="ri-alarm-warning-line ri-lg mr-2"></i> Attention !</p>
-        <p class="ml-8">{{ message }}</p>
-    </div>
+        <div class="alert alert-warning" role="alert">
+            {{ message }}
+        </div>
     {% endfor %}
 </div>

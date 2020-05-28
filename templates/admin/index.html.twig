@@ -1,19 +1,19 @@
 {% extends "admin/base.html.twig" %}
 
 {% block body %}
-    <div class="antialiased font-sans w-full lg:w-4/5 p-8 mt-6 lg:mt-0 text-gray-900 leading-normal">
-        {% include "admin/flashes.html.twig" %}
-        {% include "admin/header.html.twig" %}
-        <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-            <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
-                {% if app.request.attributes.get('_route') == 'admin.tricks.index' %}
-                    {% include "admin/trick/index.html.twig" %}
-                {% endif %}
 
-                {% if app.request.attributes.get('_route') == 'admin.categories.index' %}
-                    {% include "admin/category/index.html.twig" %}
-                {% endif %}
-            </div>
-        </div>
-    </div>
+        {% include "admin/flashes.html.twig" %}
+
+        {% include "admin/header.html.twig" %}
+
+
+
+        {% if app.request.attributes.get('_route') == 'admin.tricks.index' %}
+            {% include "admin/trick/index.html.twig" %}
+        {% endif %}
+
+        {% if app.request.attributes.get('_route') == 'admin.categories.index' %}
+            {% include "admin/category/index.html.twig" %}
+        {% endif %}
+
 {% endblock %}

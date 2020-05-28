@@ -1,21 +1,19 @@
 {% if app.request.attributes.get('_route') == 'admin.categories.index' %}
-    <h1 class="text-4xl font-semibold leading-tight">Mes Catégories</h1>
-    <hr class="my-4">
-    <div class="flex justify-end">
-        <a href="{{ path('admin.category.new') }}" class="py-4 bg-teal-500 text-white font-medium px-5 rounded hover:bg-teal-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
-            <i class="ri-file-add-line mr-2"></i>
-            Créer une Catégorie
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="display-4">Mes Catégories</h1>
+        <a href="{{ path('admin.category.new') }}" class="btn btn-primary d-flex items-center p-3">
+            <i class="ri-add-line mr-2"></i>
+            Ajouter un une Catégorie
         </a>
     </div>
 {% endif %}
 
 {% if app.request.attributes.get('_route') == 'admin.tricks.index' %}
-    <h1 class="text-4xl font-semibold leading-tight">Mes Tricks</h1>
-    <hr class="my-4">
-    <div class="flex justify-end">
-        <a href="{{ path('admin.trick.new') }}" class="py-4 bg-teal-500 text-white font-medium px-5 rounded hover:bg-teal-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
-            <i class="ri-file-add-line mr-2"></i>
-            Créer un Trick
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="display-4">Mes Tricks</h1>
+        <a href="{{ path('admin.trick.new') }}" class="btn btn-primary d-flex items-center p-3">
+            <i class="ri-add-line mr-2"></i>
+            Ajouter un Trick
         </a>
     </div>
 {% endif %}
