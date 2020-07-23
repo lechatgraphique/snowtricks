@@ -1,1 +1,19 @@
-Accueil Admin
+{% extends "admin/base.html.twig" %}
+
+{% block body %}
+
+        {% include "admin/flashes.html.twig" %}
+
+        {% include "admin/header.html.twig" %}
+
+
+
+        {% if app.request.attributes.get('_route') == 'admin.tricks.index' %}
+            {% include "admin/trick/index.html.twig" %}
+        {% endif %}
+
+        {% if app.request.attributes.get('_route') == 'admin.categories.index' %}
+            {% include "admin/category/index.html.twig" %}
+        {% endif %}
+
+{% endblock %}

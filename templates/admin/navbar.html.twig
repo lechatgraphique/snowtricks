@@ -1,0 +1,33 @@
+<nav class="list-group mb-3">
+    <a href="{{ path('admin.tricks.index') }}" class="list-group-item list-group-item-action active">
+         <span class="d-flex items-center">
+            <i class="ri-newspaper-line mr-2"></i>
+            Tricks
+        </span>
+    </a>
+    <a href="{{ path('admin.categories.index') }}#" class="list-group-item list-group-item-action">
+         <span class="d-flex items-center">
+            <i class="ri-bookmark-line mr-2"></i>
+            Catégories
+        </span>
+    </a>
+    <a href="#" class="list-group-item list-group-item-action disabled" tabindex="-1" aria-disabled="true">
+         <span class="d-flex items-center">
+            <i class="ri-user-follow-line mr-2"></i>
+            Utilisateurs
+        </span>
+    </a>
+    <a href="{{ path('user_edit') }}" class="list-group-item list-group-item-action">
+         <span class="d-flex items-center">
+            <i class="ri-user-line mr-2"></i>
+            Profil
+        </span>
+    </a>
+    <a href="{{ path('auth_logout') }}" class="list-group-item list-group-item-action">
+         <span class="d-flex items-center text-danger">
+            <i class="ri-logout-box-r-line mr-2"></i>
+            Déconnexion
+        </span>
+    </a>
+</nav>
+
