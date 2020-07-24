@@ -30,12 +30,24 @@
                 {% endif %}
             </td>
             <td  class="align-middle">
-                <a href="" class="text-danger d-flex justify-content-center align-items-center">
+                <a href="{{ path("admin.trick.delete", {id: trick.id}) }}" class="text-danger d-flex justify-content-center align-items-center">
                     <i class="ri-delete-bin-7-fill"></i>
                 </a>
             </td>
         </tr>
 
         </tbody>
+
     {% endfor %}
 </table>
+<hr/>
+<div class="pagination">
+    {% for page, number in pagination %}
+        {% if number is null %}
+            <span>{{ page|raw }}</span>
+        {% else %}
+            <a href="?page={{ number }}">{{ page|raw }}</a>
+        {% endif %}
+    {% endfor %}
+</div>
+<hr/>

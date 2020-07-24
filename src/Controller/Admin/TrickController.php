@@ -6,6 +6,7 @@ namespace App\Controller\Admin;
 use App\Entity\Trick;
 use App\Entity\User;
 use App\Form\NewTrickType;
+use App\Service\Paginator;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -20,17 +21,29 @@ class TrickController extends AbstractController
     {
         $this->objectManager = $objectManager;
     }
+
     /**
      * @Route("/admin/tricks", name="admin.tricks.index")
+     * @param Request $request
      * @return Response
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $objectManager =  $this->getDoctrine()->getRepository('App:Trick');
         $tricks = $objectManager->findAll();
 
+        $trick_path = [];
+        foreach($tricks as $trick) {
+            $trick_path[] = $trick->getSlug();
+        }
+
+        $paginator = new Paginator($request, $tricks, $this->getParameter('limit'));
+
         return $this->render('admin/index.html.twig', [
-            'tricks' => $tricks
+            'tricks' => $tricks,
+            'tricks_path' => $paginator->getPagedItems(),
+            'pagination' => $paginator->getPagination(),
+            'rows_per_page' => $this->getParameter('rows_per_page')
         ]);
     }
 
