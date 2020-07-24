@@ -42,8 +42,11 @@
                                 {{ form_errors(form.pictures) }}
                             {% endfor %}
                         {% endif %}
-                        <!-- JS Collection d'images -->
-                        <div class="pictures" data-prototype="{{ form_widget(form.pictures.vars.prototype)|e('html_attr') }}"></div>
+                        {% if trick is not defined %}
+                            <!-- JS Collection d'images -->
+                            <div class="pictures" data-prototype="{{ form_widget(form.pictures.vars.prototype)|e('html_attr') }}"></div>
+                        {% endif %}
+
                     </div>
                 </li>
             </ul>
