@@ -2,6 +2,18 @@
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 
 {% block body %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('admin.tricks.index')}}">Tricks</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {% if trick is defined %}
+                    {{ trick.title }}
+                {% else %}
+                    Création
+                {% endif %}
+            </li>
+        </ol>
+    </nav>
     {{ form_start(form) }}
     <div class="row">
         <div class="col-md-4 order-md-2 mb-4">
@@ -30,18 +42,17 @@
                                 {{ form_errors(form.pictures) }}
                             {% endfor %}
                         {% endif %}
-
-                        <div class="pictures" data-prototype="{{ form_widget(form.pictures.vars.prototype)|e('html_attr') }}">
-                        </div>
-
+                        <!-- JS Collection d'images -->
+                        <div class="pictures" data-prototype="{{ form_widget(form.pictures.vars.prototype)|e('html_attr') }}"></div>
                     </div>
-
                 </li>
             </ul>
         </div>
         <div class="col-md-8 order-md-1">
             {% if trick is defined %}
                 <h3 class="mb-3">Édition: {{ trick.title }}</h3>
+                {% else %}
+                <h3 class="mb-3">Création Trick</h3>
             {% endif %}
             <div class="row">
                 <div class="col-md-8 mb-3">

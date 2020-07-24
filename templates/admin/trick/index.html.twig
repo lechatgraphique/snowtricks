@@ -1,51 +1,41 @@
 <div class="d-flex justify-content-end">
     {% include "admin/pagination.html.twig" %}
 </div>
-<table class="table bg-white">
-    <thead class="bg-white">
-    <tr class="text-uppercase">
-        <th scope="col" class="font-weight-normal"></th>
-        <th scope="col" class="font-weight-normal">Trick(s)</th>
-        <th scope="col" class="font-weight-normal">Crée Le</th>
-        <th scope="col" class="font-weight-normal">Statuts</th>
-        <th scope="col" class="text-right align-middle font-weight-normal"><i class="ri-list-settings-line"></i></th>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col"></th>
+        <th scope="col">Trick(s)</th>
+        <th scope="col">Crée Le</th>
+        <th scope="col">Statuts</th>
+        <th scope="col"></th>
     </tr>
     </thead>
     {% for trick in tricks %}
-    <tbody>
+        <tbody>
         <tr>
-            <th scope="row" class="align-middle">
-                <img src="{{ asset('uploads/trick/'~trick.mainPicture) }}" alt="#" class="rounded thumbnails-picture" width="80">
-            </th>
-            <td class="align-middle font-weight-bold">{{ trick.title }}</td>
-            <td class="align-middle">{{ trick.createdAt |date("d M, Y","Europe/Paris") }}</td>
-            <td class="align-middle">
+            <th scope="row"  class="align-middle"> <img src="{{ asset('uploads/trick/'~trick.mainPicture) }}" alt="#" class="rounded thumbnails-picture" width="80"></th>
+            <td class="align-middle"><a href="{{ path("admin.trick.edit", {slug: trick.slug}) }}">{{ trick.title }}</a></td>
+            <td  class="align-middle">{{ trick.createdAt |date("d M, Y","Europe/Paris") }}</td>
+            <td  class="align-middle">
                 {% if trick.isValid == true %}
                     <div class="d-flex align-items-center text-primary">
-                        <i class="ri-checkbox-blank-circle-fill mr-2"></i>
-                        Actif
+                        <i class="ri-checkbox-blank-circle-fill text-success"></i>
                     </div>
                 {% else %}
                     <div class="d-flex align-items-center text-black-50 ">
-                        <i class="ri-checkbox-blank-circle-fill mr-2"></i>
-                        Inactif
+                        <i class="ri-checkbox-blank-circle-fill text-secondary"></i>
                     </div>
                 {% endif %}
             </td>
-            <td class="align-middle text-right">
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <a href="{{ path("admin.trick.edit", {slug: trick.slug}) }}" class="btn btn-light d-flex items-center p-2">
-                        <i class="ri-edit-2-line mr-2"></i>
-                        Éditer
-                    </a>
-                    <a href="{{ path("admin.trick.delete", {id: trick.id}) }}" class="btn btn-danger d-flex items-center p-2">
-                        <i class="ri-delete-bin-6-line mr-2"></i>
-                        Supprimer
-                    </a>
-                </div>
+            <td  class="align-middle">
+                <a href="" class="text-danger d-flex justify-content-center align-items-center">
+                    <i class="ri-delete-bin-7-fill"></i>
+                </a>
             </td>
         </tr>
 
-    </tbody>
+        </tbody>
     {% endfor %}
 </table>
