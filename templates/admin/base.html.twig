@@ -12,28 +12,7 @@
     </head>
     <body class="bg-light">
 
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
-            <a class="navbar-brand" href="{{ path('home_index') }}">SnowTricks Dashboard <i class="ri-snowy-line"></i></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ path('admin.tricks.index') }}">Tricks <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin.categories.index') }}">Catégories</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="{{ path('user_edit') }}">Utilisateurs</a>
-                    </li>
-                </ul>
-                <a class="btn btn-light mr-2" href="{{ path('user_edit') }}" role="button">Profil</a>
-                <a class="btn btn-danger" href="{{ path('auth_logout') }}" role="button">Déconnection</a>
-            </div>
-        </nav>
+    {% include 'navbar.html.twig' %}
 
         <main class="container">
             {% block body %}{% endblock %}

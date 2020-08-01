@@ -1,33 +1,22 @@
-<nav class="list-group mb-3">
-    <a href="{{ path('admin.tricks.index') }}" class="list-group-item list-group-item-action active">
-         <span class="d-flex items-center">
-            <i class="ri-newspaper-line mr-2"></i>
-            Tricks
-        </span>
-    </a>
-    <a href="{{ path('admin.categories.index') }}#" class="list-group-item list-group-item-action">
-         <span class="d-flex items-center">
-            <i class="ri-bookmark-line mr-2"></i>
-            Catégories
-        </span>
-    </a>
-    <a href="#" class="list-group-item list-group-item-action disabled" tabindex="-1" aria-disabled="true">
-         <span class="d-flex items-center">
-            <i class="ri-user-follow-line mr-2"></i>
-            Utilisateurs
-        </span>
-    </a>
-    <a href="{{ path('user_edit') }}" class="list-group-item list-group-item-action">
-         <span class="d-flex items-center">
-            <i class="ri-user-line mr-2"></i>
-            Profil
-        </span>
-    </a>
-    <a href="{{ path('auth_logout') }}" class="list-group-item list-group-item-action">
-         <span class="d-flex items-center text-danger">
-            <i class="ri-logout-box-r-line mr-2"></i>
-            Déconnexion
-        </span>
-    </a>
-</nav>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+    <a class="navbar-brand" href="{{ path('home_index') }}">SnowTricks Dashboard <i class="ri-snowy-line"></i></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ path('admin.tricks.index') }}">Tricks <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('admin.categories.index') }}">Catégories</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="{{ path('user_edit') }}">Utilisateurs</a>
+            </li>
+        </ul>
+        <a class="btn btn-light mr-2" href="{{ path('user_edit') }}" role="button">Profil</a>
+        <a class="btn btn-danger" href="{{ path('auth_logout') }}" role="button">Déconnection</a>
+    </div>
+</nav>
