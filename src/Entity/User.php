@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -22,7 +23,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @var int $id
+     * @var int|null $id
      */
     private ?int $id = null;
 
@@ -62,15 +63,15 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Trick", mappedBy="user", orphanRemoval=true)
-     * @var Trick|null $tricks
+     * @var Collection|null $tricks
      */
-    private $tricks;
+    private ?Collection $tricks = null;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user", orphanRemoval=true)
-     * @var Comment|null $comments
+     * @var Collection|null $comments
      */
-    private $comments;
+    private ?Collection $comments = null;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -209,9 +210,9 @@ class User implements UserInterface
     }
 
     /**
-     * @return Trick|null
+     * @return Collection|Trick[]
      */
-    public function getTricks(): ?Trick
+    public function getTricks(): Collection
     {
         return $this->tricks;
     }

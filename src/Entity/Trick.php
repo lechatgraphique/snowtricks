@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -69,36 +70,41 @@ class Trick
     private ?DateTimeInterface $updatedAt = null;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Pictrue", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Picture", cascade={"persist", "remove"})
      * @Assert\Valid()
+     * @var Picture|null $mainPicture
      */
-    private ?string $mainPicture = null;
+    private ?Picture $mainPicture = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="tricks")
+     * @var Category|null $category
      */
     private ?Category $category = null;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="trick", orphanRemoval=true, cascade={"persist", "remove"})
      * @Assert\Valid()
+     * @var Collection|null $pictures
      */
-    private ?ArrayCollection $picture = null;
+    private ?Collection $pictures = null;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick", orphanRemoval=true)
+     * @var Collection|null $comments
      */
-    private ?ArrayCollection $comments;
+    private ?Collection $comments = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="tricks")
      * @ORM\JoinColumn(nullable=false)
+     * @var User|null $user
      */
     private ?User $user = null;
 
     public function __construct()
     {
-        $this->picture = new ArrayCollection();
+        $this->pictures = new ArrayCollection();
         $this->comments = new ArrayCollection();
     }
 
@@ -237,18 +243,18 @@ class Trick
     }
 
     /**
-     * @return string|null
+     * @return Picture|null
      */
-    public function getMainPicture(): ?string
+    public function getMainPicture(): ?Picture
     {
         return $this->mainPicture;
     }
 
     /**
-     * @param string|null $mainPicture
+     * @param Picture|null $mainPicture
      * @return Trick
      */
-    public function setMainPicture(?string $mainPicture): Trick
+    public function setMainPicture(?Picture $mainPicture): Trick
     {
         $this->mainPicture = $mainPicture;
         return $this;
@@ -273,21 +279,21 @@ class Trick
     }
 
     /**
-     * @return ArrayCollection|null
+     * @return Collection|null
      */
-    public function getPicture(): ?ArrayCollection
+    public function getPictures(): ?Collection
     {
-        return $this->picture;
+        return $this->pictures;
     }
 
     /**
      * @param Picture $picture
      * @return $this
      */
-    public function addPicture(Picture $picture): Picture
+    public function addImage(Picture $picture): self
     {
-        if (!$this->picture->contains($picture)) {
-            $this->picture[] = $picture;
+        if (!$this->pictures->contains($picture)) {
+            $this->pictures[] = $picture;
             $picture->setTrick($this);
         }
 
@@ -298,11 +304,11 @@ class Trick
      * @param Picture $picture
      * @return $this
      */
-    public function removePicture(Picture $picture): Picture
+    public function removeImage(Picture $picture): self
     {
-        if ($this->picture->contains($picture)) {
-            $this->picture->removeElement($picture);
-
+        if ($this->pictures->contains($picture)) {
+            $this->pictures->removeElement($picture);
+            // set the owning side to null (unless already changed)
             if ($picture->getTrick() === $this) {
                 $picture->setTrick(null);
             }
@@ -312,9 +318,9 @@ class Trick
     }
 
     /**
-     * @return ArrayCollection|null
+     * @return Collection|null
      */
-    public function getComments(): ?ArrayCollection
+    public function getComments(): ?Collection
     {
         return $this->comments;
     }
@@ -323,7 +329,7 @@ class Trick
      * @param Comment $comment
      * @return $this
      */
-    public function addComment(Comment $comment): Comment
+    public function addComment(Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
             $this->comments[] = $comment;
@@ -337,7 +343,7 @@ class Trick
      * @param Comment $comment
      * @return $this
      */
-    public function removeComment(Comment $comment): Comment
+    public function removeComment(Comment $comment): self
     {
         if ($this->comments->contains($comment)) {
             $this->comments->removeElement($comment);

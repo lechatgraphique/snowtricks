@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Entity\Picture;
 
-class FileUploader
+class UploadPicture
 {
 
     /**

@@ -15,14 +15,14 @@ class Comment
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @var int $id
+     * @var int|null $id
      */
     private ?int $id = null;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="Le commentaire ne peut pas être vide !")
-     * @var string $content
+     * @var string|null $content
      */
     private ?string $content = null;
 

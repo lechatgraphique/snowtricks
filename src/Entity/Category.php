@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,9 +27,9 @@ class Category
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Trick", mappedBy="category")
-     * @var Trick|null $tricks
+     * @var Collection|null $tricks
      */
-    private ?Trick $tricks = null;
+    private ?Collection $tricks = null;
 
     public function __construct()
     {
@@ -62,9 +63,9 @@ class Category
     }
 
     /**
-     * @return Trick|null
+     * @return Collection|Trick[]
      */
-    public function getTricks(): ?Trick
+    public function getTricks(): Collection
     {
         return $this->tricks;
     }
