@@ -1,27 +1,28 @@
 <?php
 
+
 namespace App\Form;
 
-use App\Entity\Picture;
+use App\Entity\Comment;
 use App\Form\ApplicationType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
-class PictureType extends ApplicationType
+class CommentType extends ApplicationType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('file', FileType::class, $this->getOptions("Fichier de l'image", "Fichier de l'image"))
+            ->add('content', TextareaType::class, $this->getOptions('Votre commentaire', 'Contenu de votre commentaire ...'))
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Picture::class,
+            'data_class' => Comment::class,
         ]);
     }
 }
