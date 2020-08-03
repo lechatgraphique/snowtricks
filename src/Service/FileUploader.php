@@ -2,46 +2,26 @@
 
 namespace App\Service;
 
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Entity\Picture;
 
 class FileUploader
 {
-    private $targetDirectory;
 
-    public function __construct($targetDirectory)
+    /**
+     * @param Picture $picture
+     * @return Picture $picture
+     */
+    public function saveImage(Picture $picture): Picture
     {
-        $this->targetDirectory = $targetDirectory;
+        $file = $picture->getFile();
+        $name = md5(uniqid()) . '.' . $file->guessExtension();
+        $path = 'img/tricks';
+        $file->move($path, $name);
+
+        $picture->setPath($path);
+        $picture->setName($name);
+
+        return $picture;
     }
 
-    public function upload(UploadedFile $file)
-    {
-        $fileName = md5(uniqid()).'.'.$file->guessExtension();
-
-        try {
-            $file->move($this->getTargetDirectory(), $fileName);
-        } catch (FileException $e) {
-            // ... handle exception if something happens during file upload
-        }
-
-        return $fileName;
-    }
-
-    public function removeFile($fileName)
-    {
-        if(!file_exists($this->getTargetDirectory() . '/' . $fileName)){
-            return;
-        }
-
-        try {
-            unlink($this->getTargetDirectory() . '/' . $fileName);
-        } catch (FileException $e) {
-            // Exception si une erreur pendant la supression du fichier
-        }
-    }
-
-    public function getTargetDirectory()
-    {
-        return $this->targetDirectory;
-    }
 }
