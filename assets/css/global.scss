@@ -1,5 +1,5 @@
 // customize some Bootstrap variables
-$primary: #00b5ad;
+$primary: #0d7896;
 
 .bg-cover{
   object-fit: cover;
@@ -7,3 +7,10 @@ $primary: #00b5ad;
 
 // the ~ allows you to reference things in node_modules
 @import "~bootstrap/scss/bootstrap";
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}

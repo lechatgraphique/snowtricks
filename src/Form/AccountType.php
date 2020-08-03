@@ -16,8 +16,8 @@ class AccountType extends PictureType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('username', TextType::class, $this->getOptions("Nom d'utilisateur", "Votre nom d'utilisateur"))
-            ->add('email', EmailType::class, $this->getOptions("Email", "Votre adresse email"))
+            ->add('username', TextType::class, $this->getOptions("", "Votre nom d'utilisateur", ['label'=> false]))
+            ->add('email', EmailType::class, $this->getOptions("", "Votre adresse email", ['label'=> false]))
             //->add('file', FileType::class, $this->getOptions("Photo de profil", "Photo de profil"))
         ;
     }

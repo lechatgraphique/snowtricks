@@ -1,13 +1,13 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-        <a class="navbar-brand text-primary" href="#"><i class="ri-flutter-line ri-lg"></i> Snowtricks</a>
+        <a class="navbar-brand text-primary" href="{{ path('home.index') }}"><i class="ri-flutter-line ri-lg"></i> Snowtricks</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
             </ul>
-            {% if users is defined %}
+            {% if app.user %}
                 <div class="btn-group">
                     <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Bastien CLEMENT
@@ -18,12 +18,14 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item d-flex align-items-center" href="#"><i class="ri-settings-2-line mr-2"></i>Mon Compte</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-danger d-flex align-items-center" href="#"><i class="ri-login-box-line mr-2"></i> Déconnexion</a>
+                        <a class="dropdown-item text-danger d-flex align-items-center" href="{{ path('auth.logout') }}"><i class="ri-login-box-line mr-2"></i>Déconnexion</a>
                     </div>
                 </div>
             {% else %}
-                <a class="nav-link" href="{{ path('auth_register') }}">Inscription</a>
-                <a class="nav-link" href="{{ path('auth_login') }}"><i class="ri-user-line"></i></a>
+               <div class="d-flex align-items-center">
+                   <a class="btn btn-outline-primary mr-2" href="{{ path('auth.register') }}">Inscription</a>
+                   <a class="btn btn-primary" href="{{ path('auth.login') }}">Login</a>
+               </div>
             {% endif %}
         </div>
     </div>

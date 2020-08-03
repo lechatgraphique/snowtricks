@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\AccountType;
 use App\Form\EditPasswordType;
 use App\Form\EditProfileType;
 use App\Form\RegistrationType;
@@ -16,18 +17,19 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
     /**
      * @var Security
      */
-    private $security;
+    private Security $security;
 
     /**
      * @var ObjectManager
      */
-    private $objectManager;
+    private ObjectManager $objectManager;
 
     public function __construct(Security $security, ObjectManager $objectManager)
     {
@@ -36,16 +38,23 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/login", name="auth_login")
+     * @Route("/login", name="auth.login")
+     * @param AuthenticationUtils $utils
      * @return Response
      */
-    public function login(): Response
+    public function login(AuthenticationUtils $utils): Response
     {
-        return $this->render('auth/login.html.twig', []);
+        $error = $utils->getLastAuthenticationError();
+        $username = $utils->getLastUsername();
+
+        return $this->render('auth/login.html.twig', [
+            'error' => $error,
+            'username' => $username
+        ]);
     }
 
     /**
-     * @Route("/register", name="auth_register")
+     * @Route("/register", name="auth.register")
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
      * @return Response
@@ -178,7 +187,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/logout", name="auth_logout")
+     * @Route("/logout", name="auth.logout")
      */
     public function logout()
     {
