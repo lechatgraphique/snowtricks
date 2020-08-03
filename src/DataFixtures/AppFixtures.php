@@ -67,6 +67,7 @@ class AppFixtures extends Fixture
                 ->setUpdatedAt(new \Datetime)
                 ->setUser($faker->randomElement($users))
                 ->setCategory($faker->randomElement($categories))
+                ->setDisabled(false)
                 ->setMovie('https://youtube.com');
 
             for ($k = 1 ; $k < 4 ; $k++)

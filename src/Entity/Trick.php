@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Service\Slugify;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -372,6 +373,21 @@ class Trick
     {
         $this->user = $user;
         return $this;
+    }
+
+    /**
+     * Initialisation du slug avant un persist ou un update
+     *
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function initializeSlug()
+    {
+        if (empty($this->slug)) {
+            $slugify = new Slugify();
+            $this->slug = $slugify->slugify($this->name);
+
+        }
     }
 
 }
