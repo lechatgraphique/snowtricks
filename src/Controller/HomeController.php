@@ -2,20 +2,36 @@
 
 namespace App\Controller;
 
+use App\Entity\Trick;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
+    /**
+     * @var ObjectManager
+     */
+    private ObjectManager $objectManager;
+
+    public function __construct(ObjectManager $objectManager)
+    {
+        $this->objectManager = $objectManager;
+    }
 
     /**
-     * @Route("/", name="home_index")
+     * @Route("/", name="home.index")
      * @return Response
      */
     public function index(): Response
     {
-        return $this->render('trick/index.html.twig', []);
+        $objectManager =  $this->getDoctrine()->getRepository('App:Trick');
+        $tricks = $objectManager->findBy([], ['createdAt' => 'DESC'], 6, 0);
+
+        return $this->render('trick/index.html.twig', [
+            "tricks" => $tricks
+        ]);
     }
 
     /**

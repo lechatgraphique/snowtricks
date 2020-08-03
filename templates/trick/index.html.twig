@@ -5,9 +5,9 @@
 {% block body %}
 
     <div class="mt-5 row row-cols-1 row-cols-md-3">
-        {% include "trick/_card.html.twig" %}
-        {% include "trick/_card.html.twig" %}
-        {% include "trick/_card.html.twig" %}
+        {% for trick in tricks %}
+            {% include "trick/_card.html.twig" %}
+        {% endfor %}
     </div>
     <div class="row justify-content-md-center">
         <div class="col-md-auto">
