@@ -3,13 +3,10 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
- * @UniqueEntity(fields={"name"}, message="L...")
+ * @ORM\Entity()
  */
 class Category
 {
@@ -17,23 +14,21 @@ class Category
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @var int|null $id
      */
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=50)
+     * @var string|null $name
      */
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\OneToMany(targetEntity="App\Entity\Trick", mappedBy="category")
+     * @var Trick|null $tricks
      */
-    private $slug;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Trick", mappedBy="categories")
-     */
-    private $tricks;
+    private ?Trick $tricks = null;
 
     public function __construct()
     {
@@ -41,94 +36,68 @@ class Category
     }
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
-     * @return Category
+     * @return string|null
      */
-    public function setId($id)
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @param mixed $name
+     * @param string|null $name
      * @return Category
      */
-    public function setName($name)
+    public function setName(?string $name): Category
     {
         $this->name = $name;
-
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return Trick|null
      */
-    public function getSlug()
-    {
-        return $this->slug;
-    }
-
-    /**
-     * @param mixed $slug
-     * @return Category
-     */
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
-        return $this;
-    }
-
-
-    /**
-     * @return Collection|Trick[]
-     */
-    public function getTricks(): Collection
+    public function getTricks(): ?Trick
     {
         return $this->tricks;
     }
 
     /**
-     * @param mixed $tricks
-     * @return Category
+     * @param Trick $trick
+     * @return $this
      */
-    public function setTricks($tricks)
-    {
-        $this->tricks = $tricks;
-        return $this;
-    }
-
     public function addTrick(Trick $trick): self
     {
-        if ($this->tricks->contains($trick)) {
-            $this->tricks->add($trick);
+        if (!$this->tricks->contains($trick)) {
+            $this->tricks[] = $trick;
+            $trick->setCategory($this);
         }
 
         return $this;
     }
 
+    /**
+     * @param Trick $trick
+     * @return $this
+     */
     public function removeTrick(Trick $trick): self
     {
         if ($this->tricks->contains($trick)) {
-            $this-> tricks->removeElement($trick);
+            $this->tricks->removeElement($trick);
+
+            if ($trick->getCategory() === $this) {
+                $trick->setCategory(null);
+            }
         }
 
         return $this;
     }
+
 }

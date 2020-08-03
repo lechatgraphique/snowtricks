@@ -4,25 +4,32 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity()
- * @ORM\EntityListeners({"App\EntityListener\PictureListener"})
+ * @UniqueEntity(fields={"name"}, message="Ce nom de fichier est déjà utilisé")
  */
 class Picture
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      * @var int|null
      */
     private ?int $id = null;
 
     /**
-     * @ORM\Column()
+     * @ORM\Column(type="string", length=255)
+     * @var string|null $name
+     */
+    private ?string $name = null;
+
+    /**
+     * @ORM\Column(type="string", length=255)
      * @var string|null $path
      */
     private ?string $path = null;
@@ -35,8 +42,8 @@ class Picture
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="pictures")
-     * @ORM\JoinColumn(name="trick_id", referencedColumnName="id", onDelete="CASCADE")
-     * @var Trick|null
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @var Trick|null $trick
      */
     private ?Trick $trick = null;
 
@@ -49,12 +56,20 @@ class Picture
     }
 
     /**
-     * @param int|null $id
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string|null $name
      * @return Picture
      */
-    public function setId(?int $id): Picture
+    public function setName(?string $name): Picture
     {
-        $this->id = $id;
+        $this->name = $name;
         return $this;
     }
 
@@ -111,4 +126,5 @@ class Picture
         $this->trick = $trick;
         return $this;
     }
+
 }

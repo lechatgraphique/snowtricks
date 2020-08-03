@@ -2,17 +2,19 @@
 
 namespace App\Entity;
 
-use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+
 /**
  * @ORM\Entity()
- * @UniqueEntity(fields={"username"}, message="Le compte existe déjà")
+ * @UniqueEntity(fields={"username"}, message="Ce nom d'utilisateur est déjà utilisé")
+ * @UniqueEntity(fields={"email"}, message="Cet email est déjà utilisé")
  */
 class User implements UserInterface
 {
@@ -22,108 +24,83 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * @var int $id
      */
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true, nullable=false)
-     * @Assert\Email
-     * @var string $username
+     * @ORM\Column(type="string", length=50)
+     * @Assert\NotBlank(message="Veuillez renseigner un nom d'utilisateur")
+     * @Assert\Length(max=50, maxMessage="Votre nom d'utilisateur ne doit pas dépasser 50 caractères")
+     * @var string|null $username
      */
-    private $username;
-
+    private ?string $username = null;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=false)
-     * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire minimum {{ limit }} caractères", groups={"registration"})
-     * @Assert\EqualTo(propertyPath="confirmPassword", message="Votre mot de passe doit être le même que votre mot de passe de confirmation", groups={"registration"})
-     * @var string $password
+     * @ORM\Column(type="string", length=100)
+     * @Assert\Email(message="Veuillez renseigner un email valide")
+    * @var string|null $email
      */
-    private $password;
+    private ?string $email = null;
 
     /**
-     * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire minimum {{ limit }} caractères", groups={"registration"})
-     * @Assert\EqualTo(propertyPath="password", message="Vous n'avez pas tapé le même mot de passe", groups={"registration"})
-     * @var string $oldPassword
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire au moins 8 caractères !")
+     * @var string|null $password
      */
-    private $oldPassword;
+    private ?string $password = null;
 
     /**
-     * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire minimum {{ limit }} caractères", groups={"registration"})
-     * @Assert\EqualTo(propertyPath="password", message="Vous n'avez pas tapé le même mot de passe", groups={"registration"})
-     * @var string $newPassword
+     * @Assert\EqualTo(propertyPath="password", message="La confirmation et le mot de passe ne correspondent pas !")
+     * @var string|null $passwordConfirm
      */
-    private $newPassword;
+    private ?string $passwordConfirm = null;
 
     /**
-     * @Assert\Length(min=8, minMessage="Votre mot de passe doit faire minimum {{ limit }} caractères", groups={"registration"})
-     * @Assert\EqualTo(propertyPath="password", message="Vous n'avez pas tapé le même mot de passe", groups={"registration"})
-     * @var string $confirmPassword
+     * @ORM\Column(type="datetime")
+     * @var DateTimeInterface|null $createdAt
      */
-    private $confirmPassword;
+    private ?DateTimeInterface  $createdAt = null;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @var string $avatar
-     */
-    private $avatar;
-
-    /**
-     * @ORM\Column(type="string", columnDefinition="CHAR(2)", nullable=false)
-     * @var string $country
-     */
-    private $country;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=false)
-     * @var string $firstName
-     */
-    private $firstName;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=false)
-     * @var string $lastName
-     */
-    private $lastName;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     * @var DateTime $createdAt
-     */
-    private $createdAt;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=false)
-     * @var bool $disabled
-     */
-    private $disabled = false;
-
-    /**
-     * @ORM\Column(type="json", nullable=false)
-     * @var array $roles
-     */
-    private $roles = [];
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @var string $resetPassword
-     */
-    private $resetPassword;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @var DateTime $resetPasswordAt
-     */
-    private $resetPasswordAt;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Trick", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Trick", mappedBy="user", orphanRemoval=true)
+     * @var Trick|null $tricks
      */
     private $tricks;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user", orphanRemoval=true)
+     * @var Comment|null $comments
      */
     private $comments;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @var string|null $token
+     */
+    private ?string $token = null;
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @var bool|null $activated
+     */
+    private ?bool $activated = null;
+
+    /**
+     * @Assert\Image()
+     * @var UploadedFile|null $file
+     */
+    private ?UploadedFile $file = null;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @var string|null $picturePath
+     */
+    private ?string $picturePath = null;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @var string|null $picutreName
+     */
+    private ?string $pictureName = null;
 
     public function __construct()
     {
@@ -140,19 +117,9 @@ class User implements UserInterface
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     * @return User
-     */
-    public function setId(int $id): User
-    {
-        $this->id = $id;
-
-        return $this;
-    }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getUsername(): ?string
     {
@@ -160,18 +127,35 @@ class User implements UserInterface
     }
 
     /**
-     * @param string $username
+     * @param string|null $username
      * @return User
      */
-    public function setUsername(string $username): User
+    public function setUsername(?string $username): User
     {
         $this->username = $username;
-
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
+     */
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string|null $email
+     * @return User
+     */
+    public function setEmail(?string $email): User
+    {
+        $this->email = $email;
+        return $this;
+    }
+
+    /**
+     * @return string|null
      */
     public function getPassword(): ?string
     {
@@ -179,264 +163,57 @@ class User implements UserInterface
     }
 
     /**
-     * @param string $password
+     * @param string|null $password
      * @return User
      */
-    public function setPassword(string $password): User
+    public function setPassword(?string $password): User
     {
         $this->password = $password;
-
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getOldPassword(): ?string
+    public function getPasswordConfirm(): ?string
     {
-        return $this->oldPassword;
+        return $this->passwordConfirm;
     }
 
     /**
-     * @param string $oldPassword
+     * @param string|null $passwordConfirm
      * @return User
      */
-    public function setOldPassword(string $oldPassword): User
+    public function setPasswordConfirm(?string $passwordConfirm): User
     {
-        $this->oldPassword = $oldPassword;
+        $this->passwordConfirm = $passwordConfirm;
         return $this;
     }
 
     /**
-     * @return string
+     * @return DateTimeInterface|null
      */
-    public function getNewPassword(): ?string
-    {
-        return $this->newPassword;
-    }
-
-    /**
-     * @param string $newPassword
-     * @return User
-     */
-    public function setNewPassword(string $newPassword): User
-    {
-        $this->newPassword = $newPassword;
-        return $this;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getConfirmPassword(): ?string
-    {
-        return $this->confirmPassword;
-    }
-
-    /**
-     * @param string $confirmPassword
-     * @return User
-     */
-    public function setConfirmPassword(string $confirmPassword): User
-    {
-        $this->confirmPassword = $confirmPassword;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAvatar(): ?string
-    {
-        return $this->avatar;
-    }
-
-    /**
-     * @param string $avatar
-     * @return User
-     */
-    public function setAvatar(string $avatar): User
-    {
-        $this->avatar = $avatar;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCountry(): ?string
-    {
-        return $this->country;
-    }
-
-    /**
-     * @param string $country
-     * @return User
-     */
-    public function setCountry(string $country): User
-    {
-        $this->country = $country;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFirstName(): ?string
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * @param string $firstName
-     * @return User
-     */
-    public function setFirstName(string $firstName): User
-    {
-        $this->firstName = $firstName;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLastName(): ?string
-    {
-        return $this->lastName;
-    }
-
-    /**
-     * @param string $lastName
-     * @return User
-     */
-    public function setLastName(string $lastName): User
-    {
-        $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreatedAt(): ?DateTime
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
     /**
-     * @param DateTime $createdAt
+     * @param DateTimeInterface|null $createdAt
      * @return User
      */
-    public function setCreatedAt(DateTime $createdAt): User
+    public function setCreatedAt(?DateTimeInterface $createdAt): User
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
     /**
-     * @return bool
+     * @return Trick|null
      */
-    public function isDisabled(): ?bool
-    {
-        return $this->disabled;
-    }
-
-    /**
-     * @param bool $disabled
-     * @return User
-     */
-    public function setDisabled(bool $disabled): User
-    {
-        $this->disabled = $disabled;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRoles(): ?array
-    {
-        $roles = $this->roles;
-
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    /**
-     * @param array $roles
-     * @return User
-     */
-    public function setRoles(array $roles): User
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getResetPassword(): ?string
-    {
-        return $this->resetPassword;
-    }
-
-    /**
-     * @param string $resetPassword
-     * @return User
-     */
-    public function setResetPassword(string $resetPassword): User
-    {
-        $this->resetPassword = $resetPassword;
-
-        return $this;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getResetPasswordAt(): ?DateTime
-    {
-        return $this->resetPasswordAt;
-    }
-
-    /**
-     * @param DateTime $resetPasswordAt
-     * @return User
-     */
-    public function setResetPasswordAt(DateTime $resetPasswordAt): User
-    {
-        $this->resetPasswordAt = $resetPasswordAt;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Trick[]
-     */
-    public function getTricks(): Collection
+    public function getTricks(): ?Trick
     {
         return $this->tricks;
-    }
-
-    /**
-     * @param Collection $tricks
-     * @return $this
-     */
-    public function setTricks(Collection $tricks): self
-    {
-        $this->tricks = $tricks;
-
-        return $this;
     }
 
     /**
@@ -445,8 +222,9 @@ class User implements UserInterface
      */
     public function addTrick(Trick $trick): self
     {
-        if ($this->tricks->contains($trick)) {
-            $this->tricks->add($trick);
+        if (!$this->tricks->contains($trick)) {
+            $this->tricks[] = $trick;
+            $trick->setUser($this);
         }
 
         return $this;
@@ -460,28 +238,21 @@ class User implements UserInterface
     {
         if ($this->tricks->contains($trick)) {
             $this->tricks->removeElement($trick);
+
+            if ($trick->getUser() === $this) {
+                $trick->setUser(null);
+            }
         }
 
         return $this;
     }
 
     /**
-     * @return Collection|Comment[]
+     * @return Comment|null
      */
-    public function getComments(): Collection
+    public function getComments(): ?Comment
     {
         return $this->comments;
-    }
-
-    /**
-     * @param Collection $comments
-     * @return $this
-     */
-    public function setComments(Collection $comments): self
-    {
-        $this->comments = $comments;
-
-        return $this;
     }
 
     /**
@@ -490,8 +261,9 @@ class User implements UserInterface
      */
     public function addComment(Comment $comment): self
     {
-        if ($this->comments->contains($comment)) {
-            $this->comments->add($comment);
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setUser($this);
         }
 
         return $this;
@@ -504,25 +276,121 @@ class User implements UserInterface
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->contains($comment)) {
-            $this-> comments->removeElement($comment);
+            $this->comments->removeElement($comment);
+
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
         }
 
         return $this;
     }
 
     /**
-     * @see UserInterface
+     * @return string|null
      */
-    public function getSalt()
+    public function getToken(): ?string
     {
+        return $this->token;
+    }
 
+    /**
+     * @param string|null $token
+     * @return User
+     */
+    public function setToken(?string $token): User
+    {
+        $this->token = $token;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getActivated(): ?bool
+    {
+        return $this->activated;
+    }
+
+    /**
+     * @param bool|null $activated
+     * @return User
+     */
+    public function setActivated(?bool $activated): User
+    {
+        $this->activated = $activated;
+        return $this;
+    }
+
+    /**
+     * @return UploadedFile|null
+     */
+    public function getFile(): ?UploadedFile
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param UploadedFile|null $file
+     * @return User
+     */
+    public function setFile(?UploadedFile $file): User
+    {
+        $this->file = $file;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPicturePath(): ?string
+    {
+        return $this->picturePath;
+    }
+
+    /**
+     * @param string|null $picturePath
+     * @return User
+     */
+    public function setPicturePath(?string $picturePath): User
+    {
+        $this->picturePath = $picturePath;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPictureName(): ?string
+    {
+        return $this->pictureName;
+    }
+
+    /**
+     * @param string|null $pictureName
+     * @return User
+     */
+    public function setPictureName(?string $pictureName): User
+    {
+        $this->pictureName = $pictureName;
+        return $this;
     }
 
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function getRoles()
     {
-
+        return ['ROLE_USER'];
     }
+    /**
+     * @see UserInterface
+     */
+    public function getsalt() {}
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials() {}
+
 }

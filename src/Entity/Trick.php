@@ -4,57 +4,57 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity()
+ * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(fields={"name"}, message="Un trick possède déjà ce nom, merci de le modifier")
+ * @UniqueEntity(fields={"slug"}, message="Un trick possède déjà ce slug")
  */
 class Trick
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      * @var int|null $id
      */
     private ?int $id = null;
 
     /**
-     * @ORM\Column()
-     * @var string|null $author
-     */
-    private ?string $author = null;
-
-    /**
-     * @ORM\Column()
+     * @ORM\Column(type="string", length=255)
      * @var string|null $slug
      */
     private ?string $slug = null;
 
     /**
-     * @ORM\Column()
-     * @var string|null $title
+     * @ORM\Column(type="string", length=100)
+     * @Assert\Length(max=100, maxMessage="Le nom ne doit pas faire plus de 100 caractères")
+     * @var string|null $name
      */
-    private ?string $title = null;
+    private ?string $name = null;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(min=20, minMessage="La description doit faire au moins 20 caractères")
      * @var string|null $description
      */
     private ?string $description = null;
 
     /**
-     * @ORM\Column()
-     * @var string|null $mainPicture
+     * @ORM\Column(type="string", length=255)
+     * @var string|null $movie
      */
-    private ?string $mainPicture = null;
+    private ?string $movie = null;
 
     /**
-     * @ORM\Column()
-     * @var string|null $youtubeMovie
+     * @ORM\Column(type="boolean")
+     * @var bool|null $disabled
      */
-    private ?string $youtubeMovie = null;
+    private ?bool $disabled = null;
 
     /**
      * @ORM\Column(type="datetime")
@@ -69,35 +69,37 @@ class Trick
     private ?DateTimeInterface $updatedAt = null;
 
     /**
-     * @ORM\Column(type="boolean")
-     * @var bool|null $isValid
+     * @ORM\OneToOne(targetEntity="App\Entity\Pictrue", cascade={"persist", "remove"})
+     * @Assert\Valid()
      */
-    private ?bool $isValid = null;
+    private ?string $mainPicture = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="trick", cascade={"persist"}, orphanRemoval=true)
-     * @var Collection|null $pictures
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="tricks")
      */
-    private ?Collection $pictures = null;
+    private ?Category $category = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick")
-     * @var Collection|null $comments
+     * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="trick", orphanRemoval=true, cascade={"persist", "remove"})
+     * @Assert\Valid()
      */
-    private ?Collection $comments = null;
+    private ?ArrayCollection $picture = null;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Category", inversedBy="tricks")
-     * @var Collection|null $categories
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick", orphanRemoval=true)
      */
-    private ?Collection $categories = null;
+    private ?ArrayCollection $comments;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="tricks")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private ?User $user = null;
 
     public function __construct()
     {
-        $this->setIsValid(false);
-        $this->pictures = new ArrayCollection();
+        $this->picture = new ArrayCollection();
         $this->comments = new ArrayCollection();
-        $this->categories = new ArrayCollection();
     }
 
     /**
@@ -106,24 +108,6 @@ class Trick
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
-
-    /**
-     * @param string|null $author
-     * @return Trick
-     */
-    public function setAuthor(?string $author): Trick
-    {
-        $this->author = $author;
-        return $this;
     }
 
     /**
@@ -147,18 +131,18 @@ class Trick
     /**
      * @return string|null
      */
-    public function getTitle(): ?string
+    public function getName(): ?string
     {
-        return $this->title;
+        return $this->name;
     }
 
     /**
-     * @param string|null $title
+     * @param string|null $name
      * @return Trick
      */
-    public function setTitle(?string $title): Trick
+    public function setName(?string $name): Trick
     {
-        $this->title = $title;
+        $this->name = $name;
         return $this;
     }
 
@@ -183,36 +167,36 @@ class Trick
     /**
      * @return string|null
      */
-    public function getMainPicture(): ?string
+    public function getMovie(): ?string
     {
-        return $this->mainPicture;
+        return $this->movie;
     }
 
     /**
-     * @param string|null $mainPicture
+     * @param string|null $movie
      * @return Trick
      */
-    public function setMainPicture(?string $mainPicture): Trick
+    public function setMovie(?string $movie): Trick
     {
-        $this->mainPicture = $mainPicture;
+        $this->movie = $movie;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return bool|null
      */
-    public function getYoutubeMovie(): ?string
+    public function getDisabled(): ?bool
     {
-        return $this->youtubeMovie;
+        return $this->disabled;
     }
 
     /**
-     * @param string|null $youtubeMovie
+     * @param bool|null $disabled
      * @return Trick
      */
-    public function setYoutubeMovie(?string $youtubeMovie): Trick
+    public function setDisabled(?bool $disabled): Trick
     {
-        $this->youtubeMovie = $youtubeMovie;
+        $this->disabled = $disabled;
         return $this;
     }
 
@@ -253,65 +237,93 @@ class Trick
     }
 
     /**
-     * @return bool|null
+     * @return string|null
      */
-    public function getIsValid(): ?bool
+    public function getMainPicture(): ?string
     {
-        return $this->isValid;
+        return $this->mainPicture;
     }
 
     /**
-     * @param bool|null $isValid
+     * @param string|null $mainPicture
      * @return Trick
      */
-    public function setIsValid(?bool $isValid): Trick
+    public function setMainPicture(?string $mainPicture): Trick
     {
-        $this->isValid = $isValid;
+        $this->mainPicture = $mainPicture;
         return $this;
     }
 
     /**
-     * @return Collection|null
+     * @return Category|null
      */
-    public function getPictures(): ?Collection
+    public function getCategory(): ?Category
     {
-        return $this->pictures;
+        return $this->category;
+    }
+
+    /**
+     * @param Category|null $category
+     * @return Trick
+     */
+    public function setCategory(?Category $category): Trick
+    {
+        $this->category = $category;
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection|null
+     */
+    public function getPicture(): ?ArrayCollection
+    {
+        return $this->picture;
     }
 
     /**
      * @param Picture $picture
+     * @return $this
      */
-    public function addImage(Picture $picture)
+    public function addPicture(Picture $picture): Picture
     {
-        $picture->setTrick($this);
-        $this->pictures->add($picture);
-    }
+        if (!$this->picture->contains($picture)) {
+            $this->picture[] = $picture;
+            $picture->setTrick($this);
+        }
 
-    public function removeImage(Picture $picture)
-    {
-        $picture->setTrick(null);
-        $this->pictures->removeElement($picture);
-    }
-
-    /**
-     * @param Collection|null $pictures
-     * @return Trick
-     */
-    public function setPictures(?Collection $pictures): Trick
-    {
-        $this->pictures = $pictures;
         return $this;
     }
 
     /**
-     * @return Collection|null
+     * @param Picture $picture
+     * @return $this
      */
-    public function getComments(): ?Collection
+    public function removePicture(Picture $picture): Picture
+    {
+        if ($this->picture->contains($picture)) {
+            $this->picture->removeElement($picture);
+
+            if ($picture->getTrick() === $this) {
+                $picture->setTrick(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection|null
+     */
+    public function getComments(): ?ArrayCollection
     {
         return $this->comments;
     }
 
-    public function addComment(Comment $comment): self
+    /**
+     * @param Comment $comment
+     * @return $this
+     */
+    public function addComment(Comment $comment): Comment
     {
         if (!$this->comments->contains($comment)) {
             $this->comments[] = $comment;
@@ -321,10 +333,15 @@ class Trick
         return $this;
     }
 
-    public function removeComment(Comment $comment): self
+    /**
+     * @param Comment $comment
+     * @return $this
+     */
+    public function removeComment(Comment $comment): Comment
     {
         if ($this->comments->contains($comment)) {
             $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
             if ($comment->getTrick() === $this) {
                 $comment->setTrick(null);
             }
@@ -334,30 +351,21 @@ class Trick
     }
 
     /**
-     * @param Collection|null $comments
-     * @return Trick
+     * @return User|null
      */
-    public function setComments(?Collection $comments): Trick
+    public function getUser(): ?User
     {
-        $this->comments = $comments;
-        return $this;
+        return $this->user;
     }
 
     /**
-     * @return Collection|null
-     */
-    public function getCategories(): ?Collection
-    {
-        return $this->categories;
-    }
-
-    /**
-     * @param Collection|null $categories
+     * @param User|null $user
      * @return Trick
      */
-    public function setCategories(?Collection $categories): Trick
+    public function setUser(?User $user): Trick
     {
-        $this->categories = $categories;
+        $this->user = $user;
         return $this;
     }
+
 }
