@@ -26,8 +26,8 @@ class TrickType extends ApplicationType
                 'class' => Category::class,
                 'choice_label' => 'name'
             ]))
-            ->add('mainImage', PictureType::class, $this->getOptions('Image principale', 'Image principale'))
-            ->add('images', CollectionType::class, [
+            ->add('mainPicture', PictureType::class, $this->getOptions('Image principale', 'Image principale'))
+            ->add('pictures', CollectionType::class, [
                 'entry_type' => PictureType::class,
                 'allow_add' => true,
                 'allow_delete' => true

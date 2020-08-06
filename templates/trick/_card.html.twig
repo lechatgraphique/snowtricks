@@ -10,11 +10,13 @@
             <hr>
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <a class="link" href="#" role="button">Voir le Trick</a>
+                    <a class="link" href="{{ path('trick.show', {'slug': trick.slug}) }}" role="button">Voir le Trick</a>
                 </div>
-                {% if users is defined %}
+                {% if app.user %}
                     <div>
-                        <a class="btn btn-outline-primary" href="#" role="button"><i class="ri-edit-2-line"></i></a>
+                        <a class="btn btn-outline-primary" href="{{ path('trick.edit', {'slug': trick.slug}) }}" role="button"><i class="ri-edit-2-line"></i></a>
+                        <a class="btn btn-outline-danger" href="{{ path('trick.delete', {'slug': trick.slug}) }}" role="button"><i class="ri-delete-bin-6-line"></i></a>
+
                     </div>
                 {% endif %}
             </div>

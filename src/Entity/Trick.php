@@ -291,7 +291,7 @@ class Trick
      * @param Picture $picture
      * @return $this
      */
-    public function addImage(Picture $picture): self
+    public function addPicture(Picture $picture): self
     {
         if (!$this->pictures->contains($picture)) {
             $this->pictures[] = $picture;
@@ -305,7 +305,7 @@ class Trick
      * @param Picture $picture
      * @return $this
      */
-    public function removeImage(Picture $picture): self
+    public function removePicture(Picture $picture): self
     {
         if ($this->pictures->contains($picture)) {
             $this->pictures->removeElement($picture);
