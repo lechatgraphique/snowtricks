@@ -12,6 +12,7 @@ use App\Service\UploadPicture;
 use Doctrine\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -53,7 +54,7 @@ class TrickController extends AbstractController
                 'Votre commentaire a bien été enregistré !'
             );
 
-            return $this->redirectToRoute('home.index', [
+            return $this->redirectToRoute('trick.show', [
                 'slug' => $trick->getSlug()
             ]);
         }
@@ -63,6 +64,62 @@ class TrickController extends AbstractController
             'comments' => $comments,
             'form' => $form->createView(),
 
+        ]);
+    }
+
+    /**
+     * @Route("/trick/create", name="trick.create")
+     * @IsGranted("ROLE_USER")
+     * @param Request $request
+     * @param UploadPicture $uploadPicture
+     * @param ObjectManager $manager
+     * @return Response
+     */
+    public function create(Request $request, UploadPicture $uploadPicture, ObjectManager $manager): Response
+    {
+        $trick = new Trick();
+
+        $form = $this->createForm(TrickType::class, $trick);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $mainPicture = $trick->getMainPicture();
+
+            $mainPicture->setTrick($trick);
+
+            $mainPicture = $uploadPicture->saveImage($mainPicture);
+
+            $manager->persist($mainPicture);
+
+            foreach($trick->getPictures() as $picture)
+            {
+                $picture->setTrick($trick);
+                $picture = $uploadPicture->saveImage($picture);
+
+                $manager->persist($picture);
+            }
+            $trick->setDisabled(1);
+            $trick->setCreatedAt(new \DateTime());
+            $trick->setUpdatedAt(new \DateTime());
+            $trick->setUser($this->getUser());
+
+            $manager->persist($trick);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                "Le trick {$trick->getName()} a bien été enregistré !"
+            );
+
+            return $this->redirectToRoute('trick.show', [
+                'slug' => $trick->getSlug()
+            ]);
+        }
+
+        return $this->render('trick/create.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 
@@ -101,7 +158,7 @@ class TrickController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'Le trick <strong>' . $trick->getName() . '</strong> a bien été modifié !'
+                "Le trick {$trick->getName()} a bien été modifié !"
             );
 
             return $this->redirectToRoute('home.index', [
@@ -129,11 +186,9 @@ class TrickController extends AbstractController
 
         $fileSystem = new Filesystem();
 
-        foreach($trick->getImages() as $image)
+        foreach($trick->getPictures() as $picture)
         {
-            $fileSystem->remove($image->getPath() . '/' . $image->getName());
-            $fileSystem->remove($image->getPath() . '/cropped/' . $image->getName());
-            $fileSystem->remove($image->getPath() . '/thumbnail/' . $image->getName());
+            $fileSystem->remove($picture->getPath() . '/' . $picture->getName());
         }
 
         $manager->remove($trick);
@@ -141,10 +196,10 @@ class TrickController extends AbstractController
 
         $this->addflash(
             'success',
-            "Le trick <strong>{$trick->getName()}</strong> a été supprimé avec succès !"
+            "Le trick {$trick->getName()} a été supprimé avec succès !"
         );
 
-        return $this->redirectToRoute('home');
+        return $this->redirectToRoute('home.index');
     }
 }
 

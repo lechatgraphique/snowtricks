@@ -22,12 +22,12 @@ security:
             provider: in_database
 
             form_login:
-                login_path: auth.login
-                check_path: auth.login
+                login_path: account.login
+                check_path: account.login
 
             logout:
-                path: auth.logout
-                target: auth.login
+                path: account.logout
+                target: account.login
 
             # activate different ways to authenticate
 

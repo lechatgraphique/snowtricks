@@ -3,7 +3,11 @@
 {% block title %} Accueil SnowTricks {% endblock %}
 
 {% block body %}
-
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
     <div class="mt-5 row row-cols-1 row-cols-md-3">
         {% for trick in tricks %}
             {% include "trick/_card.html.twig" %}

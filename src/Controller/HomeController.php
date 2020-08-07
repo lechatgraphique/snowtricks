@@ -27,7 +27,7 @@ class HomeController extends AbstractController
     public function index(): Response
     {
         $objectManager =  $this->getDoctrine()->getRepository('App:Trick');
-        $tricks = $objectManager->findBy([], ['createdAt' => 'DESC'], 6, 0);
+        $tricks = $objectManager->findBy([], ['createdAt' => 'DESC'], 50, 0);
 
         return $this->render('trick/index.html.twig', [
             "tricks" => $tricks
@@ -35,7 +35,7 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/trick", name="home_show")
+     * @Route("/trick", name="home.show")
      * @return Response
      */
     public function show(): Response

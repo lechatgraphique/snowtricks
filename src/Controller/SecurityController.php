@@ -8,7 +8,10 @@ use App\Form\EditPasswordType;
 use App\Form\EditProfileType;
 use App\Form\RegistrationType;
 use Doctrine\Persistence\ObjectManager;
+use http\Exception;
 use phpDocumentor\Reflection\Types\This;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,7 +41,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/login", name="auth.login")
+     * @Route("/login", name="account.login")
      * @param AuthenticationUtils $utils
      * @return Response
      */
@@ -47,19 +50,23 @@ class SecurityController extends AbstractController
         $error = $utils->getLastAuthenticationError();
         $username = $utils->getLastUsername();
 
-        return $this->render('auth/login.html.twig', [
+        return $this->render('account/login.html.twig', [
             'error' => $error,
             'username' => $username
         ]);
     }
 
+
     /**
-     * @Route("/register", name="auth.register")
+     * @Route("/registration", name="account.registration")
      * @param Request $request
+     * @param ObjectManager $manager
      * @param UserPasswordEncoderInterface $encoder
+     * @param Swift_Mailer $mailer
      * @return Response
+     * @throws \Exception
      */
-    public function register(Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function registration(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder, Swift_Mailer $mailer): Response
     {
         $user = new User();
 
@@ -68,126 +75,126 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
+            $file = $user->getFile();
 
-            $hash = $encoder->encodePassword($user, $user->getPassword());
+            $name = md5(uniqid()) . '.' . $file->guessExtension();
 
-            $user->setPassword($hash);
-            $user->setRoles(['ROLE_USER']);
+            $path = 'img/users';
+            $file->move($path, $name);
 
-            $this->objectManager->persist($user);
-            $this->objectManager->flush();
+            $user->setPicturePath($path);
+            $user->setPictureName($name);
 
-            return $this->redirectToRoute('auth_login');
+            $password = $encoder->encodePassword($user, $user->getPassword());
+            $user->setPassword($password)
+                ->setCreatedAt(new \DateTime)
+                ->setActivated(false)
+                ->setToken(md5(random_bytes(10)));
+
+            $manager->persist($user);
+            $manager->flush();
+
+            $message = (new \Swift_Message('Validation de votre compte SnowTricks'))
+                ->setFrom('noreply@snowtricks.com')
+                ->setTo($user->getEmail())
+                ->setBody(
+                    $this->renderView('email/validation.html.twig', [
+                        'user' => $user
+                    ]),
+                    'text/html'
+                )
+            ;
+
+            $mailer->send($message);
+
+            $this->addFlash(
+                'success',
+                "Compte crée avec succès ! Veuillez valider votre compte via le mail qui vous a été envoyé pour pouvoir vous connecter !"
+            );
+
+            return $this->redirectToRoute('account.login');
         }
 
-        return $this->render('auth/register.html.twig', [
+        return $this->render('account/registration.twig', [
             'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("profile/edit", name="user_edit")
+     * Validation de l'email après une inscription
+     *
+     * @Route("/email-validation/{username}/{token}", name="email.validation")
+     * @param User $user
+     * @param $username
+     * @param $token
+     * @param ObjectManager $manager
+     */
+    public function emailValidation(User $user, $username, $token, ObjectManager $manager)
+    {
+        $objectManager = $this->getDoctrine()->getRepository('App:User');
+        $user = $objectManager->find($user->getUsername());
+
+        if ($token != null && $token === $user->getToken()) {
+            $user->setActivated(true);
+            $manager->persist($user);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                "Votre compte a été activé avec succès ! Vous pouvez désormais vous connecter !"
+            );
+        } else {
+            $this->addFlash(
+                'danger',
+                "La validation de votre compte a échoué. Le lien de validation a expiré !"
+            );
+        }
+    }
+
+    /**
+     * Afficher et traiter le formulaire de modification de profil
+     *
+     * @Route("/account/profile", name="account.profile.edit")
+     * @IsGranted("ROLE_USER")
      * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
+     * @param ObjectManager $manager
      * @return Response
      */
-    public function edit(Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function profile(Request $request, ObjectManager $manager)
     {
-        $user = $this->security->getUser();
+        $user = $this->getUser();
 
-        $form = $this->createForm(EditProfileType::class, $user);
+        $form = $this->createForm(AccountType::class, $user);
+
         $form->handleRequest($request);
 
-        $formPassword = $this->createForm(EditPasswordType::class, $user);
-        $formPassword->handleRequest($request);
-
-        if($formPassword->isSubmitted() && $formPassword->isValid()) {
-
-            if(!password_verify($formPassword->get('oldPassword')->getData(), $user->getPassword())){
-
-                $this->addFlash(
-                    'danger',
-                    'le mot de passe ne correspond pas à votre mot de passe actuel'
-                );
-
-                return $this->redirectToRoute('user_edit');
-            }
-
-            if($formPassword->get('newPassword')->getData() != $formPassword->get('confirmPassword')->getData()) {
-
-                $this->addFlash(
-                    'danger',
-                    'les mots de passe saisis ne correspondent pas'
-                );
-                return $this->redirectToRoute('user_edit');
-            }
-
-            $hash = $encoder->encodePassword($user, $formPassword->get('newPassword')->getData());
-            $user->setPassword($hash);
-
-            $this->objectManager->flush();
-
-            $this->addFlash(
-                'success',
-                'Votre mot de passe a bien été mis à jour'
-            );
-
-            return $this->redirectToRoute('user_edit');
-
-        }
-
         if($form->isSubmitted() && $form->isValid()) {
+            //$file = $user->getFile();
 
+            // $name = md5(uniqid()) . '.' . $file->getClientOriginalExtension();
 
-            $avatarFile = $form->get('avatar')->getData();
-            if ($avatarFile) {
-                $filename = uniqid().'.'.$avatarFile->guessExtension();
-                try {
-                    $avatarFile->move(
-                        $this->getParameter('profile_directory'),
-                        $filename
-                    );
-                } catch (FileException $e) { }
-                $user->setAvatar($filename);
-            }
+            //$path = 'img/users';
+            //$file->move($path, $name);
 
-            $this->objectManager->flush();
+            //$user->setImagePath($path);
+            //$user->setImageName($name);
+
+            $manager->persist($user);
+            $manager->flush();
 
             $this->addFlash(
                 'success',
-                'Votre profil a bien été mis à jour'
+                'Les modifications du profil ont été enregistrées avec succès !'
             );
-
-            return $this->redirectToRoute('user_edit');
         }
 
-
-
-        return $this->render('profile/edit.html.twig', [
-            'user' => $user,
-            'form' => $form->createView(),
-            'form_password' => $formPassword->createView()
+        return $this->render('account/profile.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("profile/{id}/delete", name="edit_profile_delete")
-     * @param User $user
-     * @return Response
-     */
-    public function delete(User $user): Response
-    {
-        if($user === $this->getUser()) {
-            $this->get('security.token_storage')->setToken(null);
-            $this->objectManager->remove($user);
-            $this->objectManager->flush();
-        }
-
-        return $this->redirectToRoute('home_index');
-    }
-
-    /**
-     * @Route("/logout", name="auth.logout")
+     * @Route("/logout", name="account.logout")
      */
     public function logout()
     {

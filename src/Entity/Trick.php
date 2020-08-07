@@ -72,6 +72,7 @@ class Trick
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Picture", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(onDelete="SET NULL")
      * @Assert\Valid()
      * @var Picture|null $mainPicture
      */
@@ -85,6 +86,7 @@ class Trick
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="trick", orphanRemoval=true, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(onDelete="SET NULL")
      * @Assert\Valid()
      * @var Collection|null $pictures
      */
