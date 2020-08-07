@@ -57,7 +57,7 @@
                     {% endif %}
                 </div>
 
-                {% for comment in trick.comments | slice(0,5) %}
+                {% for comment in trick.comments %}
                 <div class="media mb-4">
                     <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
                     <div class="media-body">
@@ -67,6 +67,12 @@
                     </div>
                 </div>
                 {% endfor %}
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <a id="loadMoreComment" class="btn btn-primary btn-lg" href="#" role="button">Plus de commentaires</a>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

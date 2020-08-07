@@ -27,7 +27,7 @@ class HomeController extends AbstractController
     public function index(): Response
     {
         $objectManager =  $this->getDoctrine()->getRepository('App:Trick');
-        $tricks = $objectManager->findBy([], ['createdAt' => 'DESC'], 50, 0);
+        $tricks = $objectManager->findAll();
 
         return $this->render('trick/index.html.twig', [
             "tricks" => $tricks
