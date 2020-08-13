@@ -14,8 +14,10 @@
                 </div>
                 {% if app.user %}
                     <div>
+                    {% if app.user == trick.user %}
                         <a class="btn btn-outline-primary" href="{{ path('trick.edit', {'slug': trick.slug}) }}" role="button"><i class="ri-edit-2-line"></i></a>
                         <a class="btn btn-outline-danger" href="{{ path('trick.delete', {'slug': trick.slug}) }}" role="button"><i class="ri-delete-bin-6-line"></i></a>
+                    {% endif %}
                     </div>
                 {% endif %}
             </div>
