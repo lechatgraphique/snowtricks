@@ -13,10 +13,11 @@
             {% include "trick/_card.html.twig" %}
         {% endfor %}
     </div>
-    <div class="row justify-content-md-center">
-        <div class="col-md-auto">
-            <a id="loadMore" class="btn btn-primary btn-lg" href="#" role="button">Voir plus de Tricks</a>
-        </div>
+
+    <div>
+        {% include 'trick/pagination.html.twig' with {
+            'route': 'home.index'
+        } %}
     </div>
 
 {% endblock %}
