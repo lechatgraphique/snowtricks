@@ -46,10 +46,10 @@ class Pagination
         $paginationLinks = array(
             'page' => $page,
             'pages' => $pages,
-            'firstPage' => $this->router->generate('view_trick', ['slug' => $trickSlug, 'page' => '1']),
-            'lastPage' => $this->router->generate('view_trick', ['slug' => $trickSlug, 'page' => $pages]),
-            'nextPage' => $this->router->generate('view_trick', ['slug' => $trickSlug, 'page' => ($page + 1)]),
-            'previousPage' => $this->router->generate('view_trick', ['slug' => $trickSlug, 'page' => ($page - 1)])
+            'firstPage' => $this->router->generate('trick.show', ['slug' => $trickSlug, 'page' => '1']),
+            'lastPage' => $this->router->generate('trick.show', ['slug' => $trickSlug, 'page' => $pages]),
+            'nextPage' => $this->router->generate('trick.show', ['slug' => $trickSlug, 'page' => ($page + 1)]),
+            'previousPage' => $this->router->generate('trick.show', ['slug' => $trickSlug, 'page' => ($page - 1)])
         );
         return $paginationLinks;
     }

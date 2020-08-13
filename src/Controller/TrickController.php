@@ -8,6 +8,8 @@ use App\Entity\Comment;
 use App\Entity\Trick;
 use App\Form\CommentType;
 use App\Form\TrickType;
+use App\Repository\CommentRepository;
+use App\Service\Pagination;
 use App\Service\UploadPicture;
 use Doctrine\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -19,21 +21,46 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TrickController extends AbstractController
 {
+    /**
+     * @var ObjectManager
+     */
+    private ObjectManager $objectManager;
+    private Pagination $pagination;
+
+    public function __construct(ObjectManager $objectManager, Pagination $pagination)
+    {
+        $this->objectManager = $objectManager;
+        $this->pagination = $pagination;
+    }
 
     /**
-     * @Route("/trick/show/{slug}", name="trick.show")
+     * @Route("/trick/{slug}", name="trick.show")
      * @param Trick $trick
      * @param Request $request
      * @param ObjectManager $manager
+     * @param CommentRepository $commentRepository
      * @return Response
      */
-    public function show(Trick $trick, Request $request, ObjectManager $manager): Response
+    public function show(Trick $trick, Request $request, ObjectManager $manager, CommentRepository $commentRepository): Response
     {
         $objectManager =  $this->getDoctrine()->getRepository('App:Trick');
         $trick = $objectManager->find($trick->getId());
 
         $objectManager =  $this->getDoctrine()->getRepository('App:Comment');
         $comments = $objectManager->findAll();
+
+        $maxPerPage = 10;
+        $page = (int) $request->query->get ('page', 1);
+
+        $commentsCount = count($commentRepository->findAll());
+        $pages = ceil($commentsCount/$maxPerPage);
+
+        /** @var Trick [] */
+        $comments = $commentRepository->findAllCommentsForPaginateAndSort($trick, $page, $maxPerPage);
+
+        dd($comments);
+        $paginationLinks = $this->pagination->getCommentUrl($page, $pages, $trick->getSlug());
+
 
         $comment = new Comment();
 
@@ -63,7 +90,8 @@ class TrickController extends AbstractController
             'trick' => $trick,
             'comments' => $comments,
             'form' => $form->createView(),
-
+            'paginationLinks' => $paginationLinks,
+            'slug' => $trick->getSlug()
         ]);
     }
 

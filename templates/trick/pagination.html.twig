@@ -1,15 +1,30 @@
 
 {% block pagination %}
-<nav aria-label="Page navigation example">
-    <ul class="pagination">
+    {% if route is same as("home.index") %}
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if route is same as("home.index") %}
+                    {% for x in 1..paginationLinks.pages %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('home.index', {'page': x }) }}">{{ x }}</a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </nav>
+    {% elseif route is same as("trick.show") %}
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if route is same as("trick.show") %}
+                    {% for x in 1..paginationLinks.pages %}
+                        <li class="page-item">
 
-        {% if route is same as("home.index") %}
-            {% for x in 1..paginationLinks.pages %}
-                <li class="page-item">
-                    <a class="page-link" href="{{ path('home.index', {'page': x }) }}">{{ x }}</a>
-                </li>
-            {% endfor %}
-        {% endif %}
-    </ul>
-</nav>
+                            <a class="page-link" href="{{ path('trick.show', {'page': x }) }}">{{ x }}</a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+
 {% endblock %}
