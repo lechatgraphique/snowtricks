@@ -42,15 +42,10 @@ class HomeController extends AbstractController
 
         $pages = ceil($tricksCount/$maxPerPage);
 
-
-
         /** @var Trick [] */
         $tricks = $trickRepository->findAllForPaginateAndSort($page, $maxPerPage);
 
-
-
         $paginationLinks = $this->pagination->getUrl($page, $pages);
-
 
         return $this->render('trick/index.html.twig', [
             "tricks" => $tricks,

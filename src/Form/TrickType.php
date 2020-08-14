@@ -30,9 +30,15 @@ class TrickType extends ApplicationType
             ->add('mainPicture', PictureType::class, $this->getOptions('Image principale', 'Image principale'))
             ->add('pictures', CollectionType::class, [
                 'entry_type' => PictureType::class,
+                'entry_options' => [
+                    'label' => false
+                ],
+                'label' => false,
+                'by_reference' => false,
                 'allow_add' => true,
-                'allow_delete' => true
+                'allow_delete' => true,
             ])
+
             ->add('movie', TextType::class, $this->getOptions('Vidéo', 'Nom de la vidéo'))
         ;
     }

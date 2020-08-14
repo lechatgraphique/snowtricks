@@ -16,6 +16,7 @@ class PictureType extends ApplicationType
         $builder
             ->add('file', FileType::class, $this->getOptions("Fichier de l'image", "Fichier de l'image"))
         ;
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

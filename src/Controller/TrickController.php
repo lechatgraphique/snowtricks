@@ -34,7 +34,7 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/trick/{slug}", name="trick.show")
+     * @Route("/trick/show/{slug}", name="trick.show")
      * @param Trick $trick
      * @param Request $request
      * @param ObjectManager $manager
@@ -48,19 +48,6 @@ class TrickController extends AbstractController
 
         $objectManager =  $this->getDoctrine()->getRepository('App:Comment');
         $comments = $objectManager->findAll();
-
-        $maxPerPage = 10;
-        $page = (int) $request->query->get ('page', 1);
-
-        $commentsCount = count($commentRepository->findAll());
-        $pages = ceil($commentsCount/$maxPerPage);
-
-        /** @var Trick [] */
-        $comments = $commentRepository->findAllCommentsForPaginateAndSort($trick, $page, $maxPerPage);
-
-        dd($comments);
-        $paginationLinks = $this->pagination->getCommentUrl($page, $pages, $trick->getSlug());
-
 
         $comment = new Comment();
 
@@ -90,7 +77,6 @@ class TrickController extends AbstractController
             'trick' => $trick,
             'comments' => $comments,
             'form' => $form->createView(),
-            'paginationLinks' => $paginationLinks,
             'slug' => $trick->getSlug()
         ]);
     }

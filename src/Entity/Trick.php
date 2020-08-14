@@ -71,9 +71,10 @@ class Trick
     private ?DateTimeInterface $updatedAt = null;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Picture", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Picture", orphanRemoval=true, cascade={"persist"})
      * @ORM\JoinColumn(onDelete="SET NULL")
      * @Assert\Valid()
+
      * @var Picture|null $mainPicture
      */
     private ?Picture $mainPicture = null;
@@ -85,7 +86,7 @@ class Trick
     private ?Category $category = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="trick", orphanRemoval=true, cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="trick", orphanRemoval=true, cascade={"persist"})
      * @ORM\JoinColumn(onDelete="SET NULL")
      * @Assert\Valid()
      * @var Collection|null $pictures
@@ -254,10 +255,10 @@ class Trick
     }
 
     /**
-     * @param Picture|null $mainPicture
+     * @param Picture $mainPicture
      * @return Trick
      */
-    public function setMainPicture(?Picture $mainPicture): Trick
+    public function setMainPicture(Picture $mainPicture): Trick
     {
         $this->mainPicture = $mainPicture;
         return $this;
