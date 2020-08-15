@@ -3,7 +3,13 @@
 {% block title %} Snowtricks {% endblock %}
 
 {% block body %}
-    <div class="container">
+
+    <div class="container mt-5 pt-5">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success mt-3">
+                {{ message }}
+            </div>
+        {% endfor %}
         <div class="row">
             <div class="col">
                 <h1 class="mt-4">{{ trick.name }}</h1>
@@ -57,9 +63,9 @@
                     {% endif %}
                 </div>
 
-                {% for comment in trick.comments %}
+                {% for comment in comments %}
                 <div class="media mb-4">
-                    <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                    <img class="d-flex mr-3 rounded-circle" src="{{ asset('img/users/') }}{{ trick.user.pictureName }}" alt="" width="30" height="30">
                     <div class="media-body">
                         <h5 class="mt-0">{{ comment.user.username }}</h5>
                         <small>{{ comment.createdAt | date('d/m/Y à H:i') }}</small>
@@ -68,11 +74,10 @@
                 </div>
                 {% endfor %}
                 <div>
-                    {% include 'trick/pagination.html.twig' with {
-                        'route': 'trick.show'
+                    {% include 'shared/pagination.html.twig' with {
+                        'route': 'trick.show',
                     } %}
                 </div>
-
             </div>
         </div>
     </div>

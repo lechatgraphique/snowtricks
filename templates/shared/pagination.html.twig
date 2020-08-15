@@ -1,0 +1,13 @@
+{% block pagination %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if route is same as("trick.show") %}
+                    {% for x in 1..paginationLinks.pages %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('trick.show',{ 'slug': slug,'page': x }) }}">{{ x }}</a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </nav>
+{% endblock %}

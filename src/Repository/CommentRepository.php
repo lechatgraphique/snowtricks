@@ -47,6 +47,7 @@ class CommentRepository extends ServiceEntityRepository
             ->setFirstResult($commentsResults)
             ->setMaxResults($maxPerPage);
 
+
         $pagination = new Paginator($query);
 
         return $pagination;

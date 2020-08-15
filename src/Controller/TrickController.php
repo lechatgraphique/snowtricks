@@ -43,16 +43,21 @@ class TrickController extends AbstractController
      */
     public function show(Trick $trick, Request $request, ObjectManager $manager, CommentRepository $commentRepository): Response
     {
+        $maxPerPage = 5;
+        $page = (int) $request->query->get ('page', 1);
+
+        $commentsCount = count($commentRepository->findBy(['trick' => $trick->getId()]));
+        $pages = ceil($commentsCount/$maxPerPage);
+
+        /** @var Trick [] */
+        $comments = $commentRepository->findAllCommentsForPaginateAndSort($trick, $page, $maxPerPage);
+        $paginationLinks = $this->pagination->getCommentUrl($page, $pages, $trick->getSlug());
+
         $objectManager =  $this->getDoctrine()->getRepository('App:Trick');
         $trick = $objectManager->find($trick->getId());
 
-        $objectManager =  $this->getDoctrine()->getRepository('App:Comment');
-        $comments = $objectManager->findAll();
-
         $comment = new Comment();
-
         $form = $this->createForm(CommentType::class, $comment);
-
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
@@ -77,7 +82,8 @@ class TrickController extends AbstractController
             'trick' => $trick,
             'comments' => $comments,
             'form' => $form->createView(),
-            'slug' => $trick->getSlug()
+            'slug' => $trick->getSlug(),
+            'paginationLinks' => $paginationLinks,
         ]);
     }
 
