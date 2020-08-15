@@ -1,9 +1,7 @@
 // customize some Bootstrap variables
 $primary: #0d7896;
 
-.bg-cover{
-  object-fit: cover;
-}
+.bg-cover{ object-fit: cover; }
 
 // the ~ allows you to reference things in node_modules
 @import "~bootstrap/scss/bootstrap";
